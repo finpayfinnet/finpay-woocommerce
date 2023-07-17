@@ -1,2 +1,2 @@
 <?php
-// Silence is golden.
+// Aller Anfang ist schwer
