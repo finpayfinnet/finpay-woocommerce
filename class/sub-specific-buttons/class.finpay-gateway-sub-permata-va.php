@@ -3,10 +3,10 @@ if (! defined('ABSPATH')) { exit; }
 /**
  * Class for each sub separated gateway buttons extending Abstract "Sub" class
  */
-class WC_Gateway_Midtrans_Sub_Permata_VA extends WC_Gateway_Midtrans_Abstract_Sub {
+class WC_Gateway_Finpay_Sub_Permata_VA extends WC_Gateway_Finpay_Abstract_Sub {
   function __construct() {
     // used as plugin id
-    $this->id = 'midtrans_sub_permata_va';
+    $this->id = 'Finpay_sub_permata_va';
     // used as Snap enabled_payments params.
     $this->sub_payment_method_params = ['permata_va'];
     // used to display icons on customer side's payment buttons.
@@ -16,15 +16,15 @@ class WC_Gateway_Midtrans_Sub_Permata_VA extends WC_Gateway_Midtrans_Abstract_Su
   }
 
   public function pluginTitle() {
-    return "Midtrans Specific: Bank Transfer Permata VA";
+    return "Finpay Specific: Bank Transfer Permata VA";
   }
   public function getSettingsDescription() {
     return "Separated payment buttons for this specific the payment methods with its own icons";
   }
   protected function getDefaultTitle () {
-    return __('Bank Transfer - Permata VA', 'midtrans-woocommerce');
+    return __('Bank Transfer - Permata VA', 'Finpay-woocommerce');
   }
   protected function getDefaultDescription () {
-    return __('Accept transfer from any bank, and Permata account.', 'midtrans-woocommerce');
+    return __('Accept transfer from any bank, and Permata account.', 'Finpay-woocommerce');
   }
 }

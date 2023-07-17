@@ -1,7 +1,7 @@
 {
     "name": "finpay/finpay-php",
     "description": "PHP Wrapper for Finpay Payment API.",
-    "homepage": "https://midtrans.com",
+    "homepage": "https://finpay.id",
     "version": "2.2.0",
     "type": "library",
     "license":"GPL-3.0",

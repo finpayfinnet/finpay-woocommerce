@@ -3,7 +3,7 @@
 /**
  * Helper functions that is redundant function used on multiple payment classes
  */
-class WC_Midtrans_Utils
+class WC_Finpay_Utils
 {
   /**
    * Convert 2 digits coundry code to 3 digit country code
@@ -50,7 +50,7 @@ class WC_Midtrans_Utils
   public static function json_print_exception ( $e, $depedency ) {
     $errorObj = array(
       'result' => "failure", 
-      'messages' => '<div class="woocommerce-error" role="alert"> Midtrans Exception: '.$e->getMessage().'. <br>Plugin Title: '.esc_html($depedency->method_title).'</div>',
+      'messages' => '<div class="woocommerce-error" role="alert"> Finpay Exception: '.$e->getMessage().'. <br>Plugin Title: '.esc_html($depedency->method_title).'</div>',
       'refresh' => false, 
       'reload' => false
     );

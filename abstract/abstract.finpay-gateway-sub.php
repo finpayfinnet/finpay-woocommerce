@@ -6,7 +6,7 @@ if (! defined('ABSPATH')) {
 /**
  * WC_Gateway_Finpay_Abstract_Sub Class
  * Abstract class prototype to be extended by sub gateway separated buttons.
- * Because Midtrans WC plugins have separate buttons for each payment methods.
+ * Because Finpay WC plugins have separate buttons for each payment methods.
  */
 abstract class WC_Gateway_Finpay_Abstract_Sub extends WC_Gateway_Finpay_Abstract {
 

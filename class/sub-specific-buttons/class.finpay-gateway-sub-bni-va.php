@@ -3,10 +3,10 @@ if (! defined('ABSPATH')) { exit; }
 /**
  * Class for each sub separated gateway buttons extending Abstract "Sub" class
  */
-class WC_Gateway_Midtrans_Sub_BNI_VA extends WC_Gateway_Midtrans_Abstract_Sub {
+class WC_Gateway_Finpay_Sub_BNI_VA extends WC_Gateway_Finpay_Abstract_Sub {
   function __construct() {
     // used as plugin id
-    $this->id = 'midtrans_sub_bni_va';
+    $this->id = 'Finpay_sub_bni_va';
     // used as Snap enabled_payments params.
     $this->sub_payment_method_params = ['bni_va'];
     // used to display icons on customer side's payment buttons.
@@ -16,15 +16,15 @@ class WC_Gateway_Midtrans_Sub_BNI_VA extends WC_Gateway_Midtrans_Abstract_Sub {
   }
 
   public function pluginTitle() {
-    return "Midtrans Specific: Bank Transfer BNI VA";
+    return "Finpay Specific: Bank Transfer BNI VA";
   }
   public function getSettingsDescription() {
     return "Separated payment buttons for this specific the payment methods with its own icons";
   }
   protected function getDefaultTitle () {
-    return __('Bank Transfer - BNI VA', 'midtrans-woocommerce');
+    return __('Bank Transfer - BNI VA', 'Finpay-woocommerce');
   }
   protected function getDefaultDescription () {
-    return __('Accept transfer from any bank, and BNI account.', 'midtrans-woocommerce');
+    return __('Accept transfer from any bank, and BNI account.', 'Finpay-woocommerce');
   }
 }

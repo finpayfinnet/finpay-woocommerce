@@ -25,10 +25,10 @@
 
   // Ensure backward compatibility with WP version <5.7 which don't have these functions
   if( !function_exists('wp_get_script_tag')){
-    WC_Midtrans_Utils::polyfill_wp_get_script_tag();
+    WC_Finpay_Utils::polyfill_wp_get_script_tag();
   }
   if( !function_exists('wp_get_inline_script_tag')){
-    WC_Midtrans_Utils::polyfill_wp_get_inline_script_tag();
+    WC_Finpay_Utils::polyfill_wp_get_inline_script_tag();
   }
   
   // $order_items = array();
@@ -39,7 +39,7 @@
 
   $is_production = $this->environment == 'production';
   $snap_api_base_url = $is_production ? 
-    "https://app.midtrans.com" : "https://app.sandbox.midtrans.com";
+    "https://app.Finpay.com" : "https://app.sandbox.Finpay.com";
   $snap_script_url = esc_attr($snap_api_base_url."/snap/snap.js");
   $snap_script_tag_id = esc_attr("snap-script");
   $client_key = esc_attr($this->client_key);
@@ -52,10 +52,10 @@
   $mixpanel_key = esc_js($mixpanel_key);
 
   $wp_base_url = home_url( '/' );
-  $plugin_backend_url = esc_url($wp_base_url."?wc-api=WC_Gateway_Midtrans");
-  $finish_url = $wp_base_url."?wc-api=WC_Gateway_Midtrans";
+  $plugin_backend_url = esc_url($wp_base_url."?wc-api=WC_Gateway_Finpay");
+  $finish_url = $wp_base_url."?wc-api=WC_Gateway_Finpay";
   $pending_url = $finish_url;
-  $error_url = $wp_base_url."?wc-api=WC_Gateway_Midtrans";
+  $error_url = $wp_base_url."?wc-api=WC_Gateway_Finpay";
 
   $is_using_map_finish_url = 
     (isset($this->enable_map_finish_url) && $this->enable_map_finish_url == 'yes')?
@@ -64,7 +64,7 @@
     (property_exists($this,'ignore_pending_status') && $this->ignore_pending_status == 'yes')?
     "true":"false";
   $is_payment_request_plugin = 
-    ($this->id == 'midtrans_paymentrequest')?
+    ($this->id == 'Finpay_paymentrequest')?
     "true":"false";
 
   $gross_amount = esc_js(isset($gross_amount)?$gross_amount:'0');
@@ -72,12 +72,12 @@
   $wc_version = esc_js(WC_VERSION);
   $plugin_name = esc_js($pluginName);
   $plugin_id = esc_js(isset($this->sub_payment_method_id)?$this->sub_payment_method_id:$this->id);
-  $midtrans_plugin_version = esc_js(MIDTRANS_PLUGIN_VERSION);
+  $finpay_plugin_version = esc_js(FINPAY_PLUGIN_VERSION);
 
   // Pass backend PHP variables into frontend JS variables
   $inline_js = <<<EOT
 
-    var wc_midtrans = {
+    var wc_finpay = {
       snap_token      : "$snap_token",
       snap_script_url : "$snap_script_url",
       snap_script_tag_id  : "$snap_script_tag_id",
@@ -96,15 +96,15 @@
       wc_version      : "$wc_version",
       plugin_name     : "$plugin_name",
       plugin_id     : "$plugin_id",
-      midtrans_plugin_version : "$midtrans_plugin_version"
+      finpay_plugin_version : "$finpay_plugin_version"
     };
 EOT;
 
   $this_plugin_dir_url = plugin_dir_url( __DIR__ );
-  $ga_script_url = $this_plugin_dir_url.'public/js/midtrans-payment-page-ga.js';
+  $ga_script_url = $this_plugin_dir_url.'public/js/Finpay-payment-page-ga.js';
   $ganalytics_script_url = 'https://www.google-analytics.com/analytics.js';
-  $mp_script_url = $this_plugin_dir_url.'public/js/midtrans-payment-page-mp.js';
-  $main_script_url = $this_plugin_dir_url.'public/js/midtrans-payment-page-main.js';
+  $mp_script_url = $this_plugin_dir_url.'public/js/Finpay-payment-page-mp.js';
+  $main_script_url = $this_plugin_dir_url.'public/js/Finpay-payment-page-main.js';
 
   // Wrap into html script tag, output to html page
   echo wp_get_inline_script_tag(

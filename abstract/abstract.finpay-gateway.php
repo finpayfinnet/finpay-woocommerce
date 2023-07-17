@@ -6,7 +6,7 @@ if (! defined('ABSPATH')) {
 /**
  * WC_Gateway_Finpay_Abstract class.
  * This class is made as a main blueprint that will be extended by each of the 
- * payment gateway/buttons. Because Midtrans WC plugin contains multiple separate buttons
+ * payment gateway/buttons. Because Finpay WC plugin contains multiple separate buttons
  * with each of its own config and functionality
  * 
  * @extends WC_Payment_Gateway
@@ -17,7 +17,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    */
   public function __construct() {
     $this->has_fields   = true;
-    $this->icon         = apply_filters( 'woocommerce_midtrans_icon', '' );
+    $this->icon         = apply_filters( 'woocommerce_Finpay_icon', '' );
     // Load the settings
     $this->init_form_fields();
     $this->init_settings();
@@ -29,7 +29,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     $this->title              = $this->get_option( 'title' );
     $this->description        = $this->get_option( 'description' );
     $this->sub_payment_method_image_file_names_str = $this->get_option( 'sub_payment_method_image_file_names_str' );
-    $this->environment        = $this->get_option( 'select_midtrans_environment' );
+    $this->environment        = $this->get_option( 'select_Finpay_environment' );
     $this->client_key = ($this->environment == 'production') ? $this->get_option( 'client_key_v2_production' ) : $this->get_option( 'client_key_v2_sandbox' );
     $this->server_key = ($this->environment == 'production') ? $this->get_option( 'server_key_v2_production' ) : $this->get_option( 'server_key_v2_sandbox' );
     $this->enable_3d_secure   = $this->get_option( 'enable_3d_secure' );
@@ -41,25 +41,25 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     $this->enable_map_finish_url   = $this->get_option( 'enable_map_finish_url' );
     $this->ganalytics_id   = $this->get_option( 'ganalytics_id' );
     $this->enable_immediate_reduce_stock   = $this->get_option( 'enable_immediate_reduce_stock' );
-    $this->to_idr_rate = apply_filters( 'midtrans_to_idr_rate', $this->get_option( 'to_idr_rate' ));
+    $this->to_idr_rate = apply_filters( 'Finpay_to_idr_rate', $this->get_option( 'to_idr_rate' ));
     $this->log = new WC_Logger();
 
     add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( &$this, 'process_admin_options' ) );
     
     // Hook for adding JS script to admin config page 
-    add_action( 'admin_print_scripts-woocommerce_page_woocommerce_settings', array( &$this, 'midtrans_admin_scripts' ));
-    add_action( 'admin_print_scripts-woocommerce_page_wc-settings', array( &$this, 'midtrans_admin_scripts' ));
+    add_action( 'admin_print_scripts-woocommerce_page_woocommerce_settings', array( &$this, 'Finpay_admin_scripts' ));
+    add_action( 'admin_print_scripts-woocommerce_page_wc-settings', array( &$this, 'Finpay_admin_scripts' ));
     // Hook for adding custom HTML on thank you page (for payement/instruction url)
     add_action( 'woocommerce_thankyou', array( $this, 'view_order_and_thankyou_page' ) );
     // Hook for adding custom HTML on view order menu from customer (for payement/instruction url)
     add_action( 'woocommerce_view_order', array( $this, 'view_order_and_thankyou_page' ) );
-    // Hook for refund request from Midtrans Dashboard or API refund
-    add_action( 'create-refund-request',  array( $this, 'midtrans_refund' ), 10, 4 );
+    // Hook for refund request from Finpay Dashboard or API refund
+    add_action( 'create-refund-request',  array( $this, 'Finpay_refund' ), 10, 4 );
     // Custom hook to customize rate convertion
-    add_filter('midtrans_to_idr_rate', function ($midtrans_rate) {
-      return $midtrans_rate;
+    add_filter('Finpay_to_idr_rate', function ($Finpay_rate) {
+      return $Finpay_rate;
     });
-    if($this->id == 'midtrans') {
+    if($this->id == 'Finpay') {
       // init notif handler class, which also add action hook to handle notif on woocommerce_api_wc_Gateway_Finpay
       // @TODO refactor this
       $notifHandler = new WC_Gateway_Finpay_Notif_Handler();
@@ -70,19 +70,19 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * Enqueue Javascripts
    * Add JS script file to admin page
   */
-  public function midtrans_admin_scripts() {
-    wp_enqueue_script( 'admin-midtrans', MIDTRANS_PLUGIN_DIR_URL . 'public/js/midtrans-admin-page.js' );
+  public function Finpay_admin_scripts() {
+    wp_enqueue_script( 'admin-Finpay', Finpay_PLUGIN_DIR_URL . 'public/js/Finpay-admin-page.js' );
   }
 
   /**
    * Initialise Gateway Settings Form Fields
    */
   public function init_form_fields() {
-    $this->form_fields = require( dirname(__FILE__) . '/../class/midtrans-admin-settings.php' );
+    $this->form_fields = require( dirname(__FILE__) . '/../class/Finpay-admin-settings.php' );
     // Currency conversion rate if currency is not IDR
     if (get_woocommerce_currency() != 'IDR') {
       $this->form_fields['to_idr_rate'] = array(
-        'title' => __("Current Currency to IDR Rate", 'midtrans-woocommerce'),
+        'title' => __("Current Currency to IDR Rate", 'Finpay-woocommerce'),
         'type' => 'text',
         'description' => 'The current currency to IDR rate',
         'default' => '10000',
@@ -114,13 +114,13 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     if ($refundResponse == '200') return true;
     else {
       $this->setLogError($refundResponse);
-      return new WP_Error( 'midtrans_refund_error', $refundResponse);
+      return new WP_Error( 'Finpay_refund_error', $refundResponse);
     }
   }
 
   /**
    * Process a payment object refund
-   * Custom helper function to initiate refund to Midtrans
+   * Custom helper function to initiate refund to Finpay
    *
    * @param WC_Order $order
    * @param int $order_id
@@ -138,24 +138,24 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     );
 
     try {
-      if(strpos($this->id, 'midtrans_sub') !== false){
+      if(strpos($this->id, 'Finpay_sub') !== false){
         // for sub separated gateway buttons, use main gateway plugin id instead
-        $this->id = 'midtrans';
+        $this->id = 'Finpay';
       }
       // @TODO: call refund API with transaction_id instead of order_id to avoid id not found for suffixed order_id. $order->get_transaction_id();
       $transaction_id = $order->get_transaction_id() 
         ? $order->get_transaction_id() 
         : $order_id;
-      $response = WC_Midtrans_API::createRefund($transaction_id, $refund_params, $this->id);
+      $response = WC_Finpay_API::createRefund($transaction_id, $refund_params, $this->id);
     } catch (Exception $e) {
       $this->setLogError( $e->getMessage() );
       // error_log(var_export($e,1));
-      $error_message = strpos($e->getMessage(), '412') ? $e->getMessage() . ' Note: Refund via Midtrans API only available on some payment methods, and if the payment status is eligible. Please consult to your midtrans PIC for more information' : $e->getMessage();
+      $error_message = strpos($e->getMessage(), '412') ? $e->getMessage() . ' Note: Refund via Finpay API only available on some payment methods, and if the payment status is eligible. Please consult to your Finpay PIC for more information' : $e->getMessage();
       return $error_message;
     }
 
     if ($response->status_code == 200) {
-      $refund_message = sprintf(__('Refunded %1$s - Refund ID: %2$s - Reason: %3$s', 'woocommerce-midtrans'), wc_price($response->refund_amount), $response->refund_key, $reason);
+      $refund_message = sprintf(__('Refunded %1$s - Refund ID: %2$s - Reason: %3$s', 'woocommerce-finpay'), wc_price($response->refund_amount), $response->refund_key, $reason);
       $order->add_order_note($refund_message);
       return $response->status_code;
     }
@@ -163,7 +163,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
 
   /**
    * Plugin config and cart/order properties are used as params
-   * Custom helper function to generate Midtrans Snap API params/payload
+   * Custom helper function to generate Finpay Snap API params/payload
    * @param $order_id
    * @return object $params
    */
@@ -176,20 +176,20 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     ));
 
     $customer_details = array();
-    $customer_details['first_name'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_first_name');
-    $customer_details['first_name'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_first_name');
-    $customer_details['last_name'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_last_name');
-    $customer_details['email'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_email');
-    $customer_details['phone'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_phone');
+    $customer_details['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
+    $customer_details['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
+    $customer_details['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
+    $customer_details['email'] = WC_Finpay_Utils::getOrderProperty($order,'billing_email');
+    $customer_details['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
 
     $billing_address = array();
-    $billing_address['first_name'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_first_name');
-    $billing_address['last_name'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_last_name');
-    $billing_address['address'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_address_1');
-    $billing_address['city'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_city');
-    $billing_address['postal_code'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_postcode');
-    $billing_address['phone'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_phone');
-    $converted_country_code = WC_Midtrans_Utils::convert_country_code(WC_Midtrans_Utils::getOrderProperty($order,'billing_country'));
+    $billing_address['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
+    $billing_address['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
+    $billing_address['address'] = WC_Finpay_Utils::getOrderProperty($order,'billing_address_1');
+    $billing_address['city'] = WC_Finpay_Utils::getOrderProperty($order,'billing_city');
+    $billing_address['postal_code'] = WC_Finpay_Utils::getOrderProperty($order,'billing_postcode');
+    $billing_address['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
+    $converted_country_code = WC_Finpay_Utils::convert_country_code(WC_Finpay_Utils::getOrderProperty($order,'billing_country'));
     $billing_address['country_code'] = (strlen($converted_country_code) != 3 ) ? 'IDN' : $converted_country_code ;
 
     $customer_details['billing_address'] = $billing_address;
@@ -197,13 +197,13 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
 
     if ( isset ( $_POST['ship_to_different_address'] ) ) {
       $shipping_address = array();
-      $shipping_address['first_name'] = WC_Midtrans_Utils::getOrderProperty($order,'shipping_first_name');
-      $shipping_address['last_name'] = WC_Midtrans_Utils::getOrderProperty($order,'shipping_last_name');
-      $shipping_address['address'] = WC_Midtrans_Utils::getOrderProperty($order,'shipping_address_1');
-      $shipping_address['city'] = WC_Midtrans_Utils::getOrderProperty($order,'shipping_city');
-      $shipping_address['postal_code'] = WC_Midtrans_Utils::getOrderProperty($order,'shipping_postcode');
-      $shipping_address['phone'] = WC_Midtrans_Utils::getOrderProperty($order,'billing_phone');
-      $converted_country_code = WC_Midtrans_Utils::convert_country_code(WC_Midtrans_Utils::getOrderProperty($order,'shipping_country'));
+      $shipping_address['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_first_name');
+      $shipping_address['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_last_name');
+      $shipping_address['address'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_address_1');
+      $shipping_address['city'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_city');
+      $shipping_address['postal_code'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_postcode');
+      $shipping_address['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
+      $converted_country_code = WC_Finpay_Utils::convert_country_code(WC_Finpay_Utils::getOrderProperty($order,'shipping_country'));
       $shipping_address['country_code'] = (strlen($converted_country_code) != 3 ) ? 'IDN' : $converted_country_code;
       $customer_details['shipping_address'] = $shipping_address;
     }
@@ -215,12 +215,12 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
       foreach( $order->get_items() as $item ) {
         if ( $item['qty'] ) {
           // $product = $order->get_product_from_item( $item );
-          $midtrans_item = array();
-          $midtrans_item['id']    = $item['product_id'];
-          $midtrans_item['price']      = ceil($order->get_item_subtotal( $item, false ));
-          $midtrans_item['quantity']   = $item['qty'];
-          $midtrans_item['name'] = $item['name'];
-          $items[] = $midtrans_item;
+          $Finpay_item = array();
+          $Finpay_item['id']    = $item['product_id'];
+          $Finpay_item['price']      = ceil($order->get_item_subtotal( $item, false ));
+          $Finpay_item['quantity']   = $item['qty'];
+          $Finpay_item['name'] = $item['name'];
+          $items[] = $Finpay_item;
         }
       }
     }
@@ -316,8 +316,8 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     // add Snap API metadata, identifier for request coming via this plugin
     try {
       $params['metadata'] = array(
-        'x_midtrans_wc_plu' => array(
-          'version' => MIDTRANS_PLUGIN_VERSION,
+        'x_Finpay_wc_plu' => array(
+          'version' => Finpay_PLUGIN_VERSION,
           'wc' => WC_VERSION,
           'php' => phpversion()
         )
@@ -347,15 +347,15 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
   }
   
   /**
-   * Helper function to handle Midtrans Refund, when refund trigger not from WC but from Midtrans
+   * Helper function to handle Finpay Refund, when refund trigger not from WC but from Finpay
    * @param  [int] $order_id
    * @param  [int] $refund_amount
    * @param  [string] $refund_reason
    * @param  [bool] $isFullRefund
    * @return WC_Order_Refund|WP_Error
    */
-  public function midtrans_refund( $order_id, $refund_amount, $refund_reason, $isFullRefund = false ) {
-    $order_id = WC_Midtrans_Utils::check_and_restore_original_order_id($order_id);
+  public function Finpay_refund( $order_id, $refund_amount, $refund_reason, $isFullRefund = false ) {
+    $order_id = WC_Finpay_Utils::check_and_restore_original_order_id($order_id);
     $order  = wc_get_order( $order_id );
     if( ! is_a( $order, 'WC_Order') ) {
       return;
@@ -417,7 +417,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * @param WC_Order $order WC Order instance of the current transaction
    */
   public function set_finish_url_user_cookies( $order ) {
-    $cookie_name = 'wc_midtrans_last_order_finish_url';
+    $cookie_name = 'wc_Finpay_last_order_finish_url';
     $order_finish_url = $order->get_checkout_order_received_url();
     setcookie($cookie_name, $order_finish_url);
   }
@@ -428,7 +428,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * @param string $message the error message that will be recorded
    */
   public function setLogError( $message ) {
-    WC_Midtrans_Logger::log( $message, 'midtrans-error', $this->id, current_time( 'timestamp' ) );
+    WC_Finpay_Logger::log( $message, 'Finpay-error', $this->id, current_time( 'timestamp' ) );
   }
 
   /**
@@ -452,18 +452,18 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
         // remove whitespaces
         $image_file_name = str_replace(' ', '', $image_file_name);
         // prefix with internal image url
-        $image_url = MIDTRANS_PLUGIN_DIR_URL.'public/images/payment-methods/'.$image_file_name;
+        $image_url = Finpay_PLUGIN_DIR_URL.'public/images/payment-methods/'.$image_file_name;
         if(strpos($image_file_name, '://') !== false){
           // image is absolute url, external, don't prefix.
           $image_url = $image_file_name;
         }
-        $image_tag .= '<img src="'.$image_url.'" alt="Midtrans" style="max-height: 2em; max-width: 4em; background-color: #ffffffdd; padding: 0.2em 0.3em; border-radius: 0.3em; border: 0.5px solid #ccccccdd;"/> ';
+        $image_tag .= '<img src="'.$image_url.'" alt="Finpay" style="max-height: 2em; max-width: 4em; background-color: #ffffffdd; padding: 0.2em 0.3em; border-radius: 0.3em; border: 0.5px solid #ccccccdd;"/> ';
       }
     }
 
     // allow merchant-defined custom filter function to modify $image_tag
     $image_tag_after_filter = 
-      apply_filters( 'midtrans_gateway_icon_before_render', $image_tag);
+      apply_filters( 'Finpay_gateway_icon_before_render', $image_tag);
     // default filter from WC
     $image_tag_after_filter = 
       apply_filters('woocommerce_gateway_icon', $image_tag_after_filter, $this->id);

@@ -1,21 +1,21 @@
 <?php
     /**
-     * Midtrans Payment Request Gateway Class
-     * Duplicated from `class.midtrans-gateway.php`
-     * Check `class.midtrans-gateway.php` file for proper function comments
+     * Finpay Payment Request Gateway Class
+     * Duplicated from `class.Finpay-gateway.php`
+     * Check `class.Finpay-gateway.php` file for proper function comments
      *
      * Developed specifically for Chrome Payment Request API
      * In collaboration with Google Dev representative
      * Which function as Browser level credit card storage function
      */
-    class WC_Gateway_Midtrans_Paymentrequest extends WC_Gateway_Midtrans_Abstract {
+    class WC_Gateway_Finpay_Paymentrequest extends WC_Gateway_Finpay_Abstract {
 
       /**
        * Constructor
        */
       function __construct() {
-        $this->id           = 'midtrans_paymentrequest';
-        $this->method_title = __( $this->pluginTitle(), 'midtrans-woocommerce' );
+        $this->id           = 'Finpay_paymentrequest';
+        $this->method_title = __( $this->pluginTitle(), 'Finpay-woocommerce' );
         $this->method_description = $this->getSettingsDescription();
 
         parent::__construct();
@@ -24,8 +24,8 @@
       }
 
       public function admin_options() { ?>
-        <h3><?php _e( $this->pluginTitle(), 'midtrans-woocommerce' ); ?></h3>
-        <p><?php _e('Allows credit card payments using Midtrans.', 'midtrans-woocommerce' ); ?></p>
+        <h3><?php _e( $this->pluginTitle(), 'Finpay-woocommerce' ); ?></h3>
+        <p><?php _e('Allows credit card payments using Finpay.', 'Finpay-woocommerce' ); ?></p>
         <table class="form-table">
           <?php
             // Generate the HTML For the settings form.
@@ -37,19 +37,19 @@
 
       function init_form_fields() {
         parent::init_form_fields();
-        WC_Midtrans_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
+        WC_Finpay_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
           'acquring_bank' => array(
-            'title' => __( 'Acquiring Bank', 'midtrans-woocommerce'),
+            'title' => __( 'Acquiring Bank', 'Finpay-woocommerce'),
             'type' => 'text',
-            'label' => __( 'Acquiring Bank', 'midtrans-woocommerce' ),
-            'description' => __( 'You should leave it empty, it will be auto configured. </br> Alternatively may specify your card-payment acquiring bank for this payment option. </br> Options: BCA, BRI, DANAMON, MAYBANK, BNI, MANDIRI, CIMB, etc (Only choose 1 bank).' , 'midtrans-woocommerce' ),
+            'label' => __( 'Acquiring Bank', 'Finpay-woocommerce' ),
+            'description' => __( 'You should leave it empty, it will be auto configured. </br> Alternatively may specify your card-payment acquiring bank for this payment option. </br> Options: BCA, BRI, DANAMON, MAYBANK, BNI, MANDIRI, CIMB, etc (Only choose 1 bank).' , 'Finpay-woocommerce' ),
             'default' => ''
           ),
           'bin_number' => array(
-            'title' => __( 'Allowed CC BINs', 'midtrans-woocommerce'),
+            'title' => __( 'Allowed CC BINs', 'Finpay-woocommerce'),
             'type' => 'text',
-            'label' => __( 'Allowed CC BINs', 'midtrans-woocommerce' ),
-            'description' => __( 'Leave this blank if you dont understand!</br> Fill with CC BIN numbers (or bank name) that you want to allow to use this payment button. </br> Separate BIN number with coma Example: 4,5,4811,bni,mandiri', 'midtrans-woocommerce' ),
+            'label' => __( 'Allowed CC BINs', 'Finpay-woocommerce' ),
+            'description' => __( 'Leave this blank if you dont understand!</br> Fill with CC BIN numbers (or bank name) that you want to allow to use this payment button. </br> Separate BIN number with coma Example: 4,5,4811,bni,mandiri', 'Finpay-woocommerce' ),
             'default' => ''
           )
         ));
@@ -62,7 +62,7 @@
         $order = new WC_Order( $order_id );
         // Get response object template
         $successResponse = $this->getResponseTemplate( $order );
-        // Get data for charge to midtrans API
+        // Get data for charge to Finpay API
         $params = $this->getPaymentRequestData( $order_id );
 
         // add credit card payment
@@ -81,10 +81,10 @@
         // Empty the cart because payment is initiated.
         $woocommerce->cart->empty_cart();
         try {
-          $snapResponse = WC_Midtrans_API::createSnapTransactionHandleDuplicate( $order, $params, $this->id );
+          $snapResponse = WC_Finpay_API::createSnapTransactionHandleDuplicate( $order, $params, $this->id );
         } catch (Exception $e) {
           $this->setLogError( $e->getMessage() );
-          WC_Midtrans_Utils::json_print_exception( $e, $this );
+          WC_Finpay_Utils::json_print_exception( $e, $this );
           exit();
         }
 
@@ -120,27 +120,27 @@
        * @return string
        */
       public function pluginTitle() {
-        return "Midtrans Adv: Card in-Browser Payment UI";
+        return "Finpay Adv: Card in-Browser Payment UI";
       }
 
       /**
        * @return string
        */
       protected function getDefaultTitle () {
-        return __('Credit Card Payment via Midtrans', 'midtrans-woocommerce');
+        return __('Credit Card Payment via Finpay', 'Finpay-woocommerce');
       }
 
       /**
        * @return string
        */
       protected function getSettingsDescription() {
-        return __('Alternative Card Payment form using in-browser payment UI (leave it disabled if not sure).', 'midtrans-woocommerce');
+        return __('Alternative Card Payment form using in-browser payment UI (leave it disabled if not sure).', 'Finpay-woocommerce');
       }
 
       /**
        * @return string
        */
       protected function getDefaultDescription () {
-        return __('Pay with Credit Card', 'midtrans-woocommerce');
+        return __('Pay with Credit Card', 'Finpay-woocommerce');
       }
     }

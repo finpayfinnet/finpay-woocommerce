@@ -13,7 +13,7 @@
  * @param array $query_vars - Query vars from WC_Order_Query.
  * @return array modified $query
  */
-function midtrans_handle_custom_query_var( $query, $query_vars ) {
+function finpay_handle_custom_query_var( $query, $query_vars ) {
 	if ( ! empty( $query_vars['_mt_payment_transaction_id'] ) ) {
 		$query['meta_query'][] = array(
 			'key' => '_mt_payment_transaction_id',
@@ -23,29 +23,29 @@ function midtrans_handle_custom_query_var( $query, $query_vars ) {
 
 	return $query;
 }
-add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'midtrans_handle_custom_query_var', 10, 2 );
+add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'finpay_handle_custom_query_var', 10, 2 );
 
 try {
 	if(isset($_GET['id'])){ // handler for BCA_Klikpay finish redirect
 		$trx_id = sanitize_text_field($_GET['id']);
 		// Get order from transaction_id meta data
 		$order = wc_get_orders( array( '_mt_payment_transaction_id' => $trx_id ) );
-		$plugin_id = isset($order) && $order[0] ? $order[0]->get_payment_method() : 'midtrans';
-		$midtrans_notification = WC_Midtrans_API::getMidtransStatus($trx_id, $plugin_id);
+		$plugin_id = isset($order) && $order[0] ? $order[0]->get_payment_method() : 'Finpay';
+		$Finpay_notification = WC_Finpay_API::getFinpayStatus($trx_id, $plugin_id);
 	}else if(isset($_POST['response'])){ // handler for CIMB CLICKS finish redirect
 		$sanitizedPost = [];
 		$sanitizedPost['response'] = sanitize_text_field($_POST['response']);
 		$response = preg_replace('/\\\\/', '', $sanitizedPost['response']);		
-		$midtrans_notification = json_decode($response);	
+		$Finpay_notification = json_decode($response);	
 	}
 } catch (Exception $e) {
-	error_log('Failed to do Midtrans Get Status: '.print_r($e,true));
-	$midtrans_notification = new stdClass();
-	$midtrans_notification->transaction_status = 'not found';
+	error_log('Failed to do Finpay Get Status: '.print_r($e,true));
+	$Finpay_notification = new stdClass();
+	$Finpay_notification->transaction_status = 'not found';
 }
 
-// OR uncomment this to redirect it to midtrans plugin callback handler
-// echo "loading... <script>window.location = '".get_site_url(null, '/')."?wc-api=WC_Gateway_Midtrans&id=".$_GET['id']."'</script>";
+// OR uncomment this to redirect it to Finpay plugin callback handler
+// echo "loading... <script>window.location = '".get_site_url(null, '/')."?wc-api=WC_Gateway_Finpay&id=".$_GET['id']."'</script>";
 
 get_header(); // WP Header
 ?>
@@ -54,18 +54,18 @@ get_header(); // WP Header
     <main id="main" class="site-main" role="main">
         <?php
         // Customize this part
-		if($midtrans_notification->transaction_status == 'settlement'){
+		if($Finpay_notification->transaction_status == 'settlement'){
 			// TODO implement what to do when payment success
 			?> 
 				<h3>Payment Success!</h3>
 				<hr>
 				<p>We have received your payment, your order is being processed. Thank you!</p>
 			<?php
-		}else if($midtrans_notification->transaction_status == 'pending'){
+		}else if($Finpay_notification->transaction_status == 'pending'){
 			// TODO implement what to do when payment pending
 			?> 
 				<?php 
-					if($midtrans_notification->payment_type == 'bca_klikpay'){
+					if($Finpay_notification->payment_type == 'bca_klikpay'){
 						// BCA Klikpay specific, all non-settlement are considered failure
 				?>
 					<h3>Payment Failed</h3>

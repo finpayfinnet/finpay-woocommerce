@@ -1,17 +1,17 @@
 <?php
     /**
-     * Midtrans Payment Online Installment Gateway Class
+     * Finpay Payment Online Installment Gateway Class
      * Duplicated from `class.finpay-gateway.php`
      * Check `class.finpay-gateway.php` file for proper function comments
      */
 
-     class WC_Gateway_Midtrans_Installment extends WC_Gateway_Midtrans_Abstract {
+     class WC_Gateway_Finpay_Installment extends WC_Gateway_Finpay_Abstract {
 
       /**
        * Constructor
        */
       function __construct() {
-        $this->id           = 'midtrans_installment';
+        $this->id           = 'Finpay_installment';
         $this->method_title = __( $this->pluginTitle(), 'finpay-woocommerce' );
         $this->method_description = $this->getSettingsDescription();
 
@@ -34,7 +34,7 @@
 
       function init_form_fields() {
         parent::init_form_fields();
-        WC_Midtrans_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
+        WC_Finpay_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
           'installment_term' => array(
             'title' => __( 'Installment Terms', 'finpay-woocommerce' ),
             'type' => 'text',
@@ -64,7 +64,7 @@
         $order = new WC_Order( $order_id );
         // Get response object template
         $successResponse = $this->getResponseTemplate( $order );
-        // Get data for charge to midtrans API
+        // Get data for charge to Finpay API
         $params = $this->getPaymentRequestData( $order_id );
 
         // add credit card payment
@@ -88,10 +88,10 @@
         // Empty the cart because payment is initiated.
         $woocommerce->cart->empty_cart();
         try {
-          $snapResponse = WC_Midtrans_API::createSnapTransactionHandleDuplicate( $order, $params, $this->id );
+          $snapResponse = WC_Finpay_API::createSnapTransactionHandleDuplicate( $order, $params, $this->id );
         } catch (Exception $e) {
           $this->setLogError( $e->getMessage() );
-          WC_Midtrans_Utils::json_print_exception( $e, $this );
+          WC_Finpay_Utils::json_print_exception( $e, $this );
           exit();
         }
 
@@ -132,21 +132,21 @@
        * @return string
        */
       public function pluginTitle() {
-        return "Midtrans Adv: Online Installment";
+        return "Finpay Adv: Online Installment";
       }
 
       /**
        * @return string
        */
       protected function getDefaultTitle () {
-        return __('Credit Card Installment via Midtrans', 'finpay-woocommerce');
+        return __('Credit Card Installment via Finpay', 'finpay-woocommerce');
       }
 
       /**
        * @return string
        */
       protected function getSettingsDescription() {
-        return __('Setup Midtrans card payment with On-Us <a href="https://github.com/veritrans/SNAP-Woocommerce/wiki/02---Credit-card-online-and-offline-installment">Installment(Cicilan) feature</a>, only used if you already have agreement with bank (leave it disabled if not sure).', 'finpay-woocommerce');
+        return __('Setup Finpay card payment with On-Us <a href="https://github.com/veritrans/SNAP-Woocommerce/wiki/02---Credit-card-online-and-offline-installment">Installment(Cicilan) feature</a>, only used if you already have agreement with bank (leave it disabled if not sure).', 'finpay-woocommerce');
       }
 
       /**

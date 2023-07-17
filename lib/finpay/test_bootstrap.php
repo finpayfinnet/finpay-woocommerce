@@ -5,6 +5,6 @@
  */
 require_once dirname(__FILE__) . '/vendor/autoload.php';
 
-require_once dirname(__FILE__) . '/Midtrans.php';
+require_once dirname(__FILE__) . '/Finpay.php';
 require_once dirname(__FILE__) . '/tests/VtTests.php';
 require_once dirname(__FILE__) . '/tests/utility/VtFixture.php';

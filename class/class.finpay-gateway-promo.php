@@ -1,21 +1,21 @@
 <?php
     /**
-     * Midtrans Promo Payment Gateway Class
-     * Duplicated from `class.midtrans-gateway.php`
-     * Check `class.midtrans-gateway.php` file for proper function comments
+     * Finpay Promo Payment Gateway Class
+     * Duplicated from `class.Finpay-gateway.php`
+     * Check `class.Finpay-gateway.php` file for proper function comments
      *
      * Using WC Coupon mechanism to apply discount 
      * then lock user to pay with specific payment channel
-     * which is often required as Midtrans promo campaign
+     * which is often required as Finpay promo campaign
      */
-    class WC_Gateway_Midtrans_Promo extends WC_Gateway_Midtrans_Abstract {
+    class WC_Gateway_Finpay_Promo extends WC_Gateway_Finpay_Abstract {
 
       /**
        * Constructor
        */
       function __construct() {
-        $this->id           = 'midtrans_promo';
-        $this->method_title = __( $this->pluginTitle(), 'midtrans-woocommerce' );
+        $this->id           = 'Finpay_promo';
+        $this->method_title = __( $this->pluginTitle(), 'Finpay-woocommerce' );
         $this->method_description = $this->getSettingsDescription();
 
         parent::__construct();
@@ -31,8 +31,8 @@
        * @return void
        */
       public function admin_options() { ?>
-        <h3><?php _e( $this->pluginTitle(), 'midtrans-woocommerce' ); ?></h3>
-        <p><?php _e($this->getSettingsDescription(), 'midtrans-woocommerce' ); ?></p>
+        <h3><?php _e( $this->pluginTitle(), 'Finpay-woocommerce' ); ?></h3>
+        <p><?php _e($this->getSettingsDescription(), 'Finpay-woocommerce' ); ?></p>
         <table class="form-table">
           <?php
             // Generate the HTML For the settings form.
@@ -48,24 +48,24 @@
        */
       function init_form_fields() {
         parent::init_form_fields();
-        WC_Midtrans_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
+        WC_Finpay_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
           'method_enabled' => array(
-            'title' => __( 'Allowed Payment Method', 'midtrans-woocommerce' ),
+            'title' => __( 'Allowed Payment Method', 'Finpay-woocommerce' ),
             'type' => 'text',
-            'description' => __( 'Customize allowed payment method, separate payment method code with coma. e.g: bank_transfer,credit_card. <br>Leave it default if you are not sure.', 'midtrans-woocommerce' ),
+            'description' => __( 'Customize allowed payment method, separate payment method code with coma. e.g: bank_transfer,credit_card. <br>Leave it default if you are not sure.', 'Finpay-woocommerce' ),
             'default' => 'credit_card'
           ),
           'bin_number' => array(
-            'title' => __( 'Allowed CC BINs', 'midtrans-woocommerce'),
+            'title' => __( 'Allowed CC BINs', 'Finpay-woocommerce'),
             'type' => 'text',
-            'label' => __( 'Allowed CC BINs', 'midtrans-woocommerce' ),
-            'description' => __( 'Fill with CC BIN numbers (or bank name) that you want to allow to use this payment button. </br> Separate BIN number with coma Example: 4,5,4811,bni,mandiri', 'midtrans-woocommerce' ),
+            'label' => __( 'Allowed CC BINs', 'Finpay-woocommerce' ),
+            'description' => __( 'Fill with CC BIN numbers (or bank name) that you want to allow to use this payment button. </br> Separate BIN number with coma Example: 4,5,4811,bni,mandiri', 'Finpay-woocommerce' ),
             'default' => ''
           ),
           'promo_code' => array(
-            'title' => __( 'Promo Code', 'midtrans-woocommerce' ),
+            'title' => __( 'Promo Code', 'Finpay-woocommerce' ),
             'type' => 'text',
-            'description' => __( 'Promo Code that would be used for discount. Leave blank if you are not using promo code.', 'midtrans-woocommerce' ),
+            'description' => __( 'Promo Code that would be used for discount. Leave blank if you are not using promo code.', 'Finpay-woocommerce' ),
             'default' => 'onlinepromomid'
           )
         ));
@@ -93,7 +93,7 @@
 
         // Get response object template
         $successResponse = $this->getResponseTemplate( $order );
-        // Get data for charge to midtrans API
+        // Get data for charge to Finpay API
         $params = $this->getPaymentRequestData( $order_id );
 
         // check enabled payment
@@ -112,10 +112,10 @@
         $woocommerce->cart->empty_cart();
 
         try {
-          $snapResponse = WC_Midtrans_API::createSnapTransactionHandleDuplicate( $order, $params, $this->id );
+          $snapResponse = WC_Finpay_API::createSnapTransactionHandleDuplicate( $order, $params, $this->id );
         } catch (Exception $e) {
             $this->setLogError( $e->getMessage() );
-            WC_Midtrans_Utils::json_print_exception( $e, $this );
+            WC_Finpay_Utils::json_print_exception( $e, $this );
           exit();
         }
 
@@ -158,28 +158,28 @@
        * @return string
        */
       public function pluginTitle() {
-        return "Midtrans Adv: Promo Payment";
+        return "Finpay Adv: Promo Payment";
       }
 
       /**
        * @return string
        */
       protected function getDefaultTitle () {
-        return __('Credit Card Promo via Midtrans', 'midtrans-woocommerce');
+        return __('Credit Card Promo via Finpay', 'Finpay-woocommerce');
       }
 
       /**
        * @return string
        */
       protected function getSettingsDescription() {
-        return __('Setup specific Midtrans <a href="https://github.com/veritrans/SNAP-Woocommerce/wiki/03--Promo---discount-payment">payment-method based promo</a>, usually only used if you have promo agreement with bank/payment provider (leave it disabled if not sure).', 'midtrans-woocommerce');
+        return __('Setup specific Finpay <a href="https://github.com/veritrans/SNAP-Woocommerce/wiki/03--Promo---discount-payment">payment-method based promo</a>, usually only used if you have promo agreement with bank/payment provider (leave it disabled if not sure).', 'Finpay-woocommerce');
       }
 
       /**
        * @return string
        */
       protected function getDefaultDescription () {
-        return __('Credit Card Promo via Midtrans', 'midtrans-woocommerce');
+        return __('Credit Card Promo via Finpay', 'Finpay-woocommerce');
       }
 
     }

@@ -1,12 +1,12 @@
 <?php
   /**
-   * ### Midtrans Payment Plugin for Wordrpress-WooCommerce ###
+   * ### Finpay Payment Plugin for Wordrpress-WooCommerce ###
    *
-   * This plugin allow your Wordrpress-WooCommerce to accept payment from customer using Midtrans Payment Gateway solution.
+   * This plugin allow your Wordrpress-WooCommerce to accept payment from customer using Finpay Payment Gateway solution.
    *
    * @category   Wordrpress-WooCommerce Payment Plugin
-   * @author     Rizda Dwi Prasetya <rizda.prasetya@midtrans.com>
-   * @link       http://docs.midtrans.com
+   * @author     Caisar Oentoro <caisar@finnet.co.id>
+   * @link       http://docs.Finpay.com
    * (This plugin is made based on Payment Plugin Template by WooCommerce)
    *
    * LICENSE: This program is free software; you can redistribute it and/or
@@ -25,10 +25,10 @@
    */
 
     /**
-     * Midtrans Payment Gateway Class
+     * Finpay Payment Gateway Class
      * extend implementation from main blueprint of abstract class
      */
-    class WC_Gateway_Midtrans extends WC_Gateway_Midtrans_Abstract {
+    class WC_Gateway_Finpay extends WC_Gateway_Finpay_Abstract {
 
       /**
        * Constructor
@@ -37,8 +37,8 @@
         /**
          * Fetch config option field values and set it as private variables
          */
-        $this->id           = 'midtrans';
-        $this->method_title = __( $this->pluginTitle(), 'midtrans-woocommerce' );
+        $this->id           = 'Finpay';
+        $this->method_title = __( $this->pluginTitle(), 'Finpay-woocommerce' );
         $this->method_description = $this->getSettingsDescription();
         $this->has_fields   = true;
 
@@ -55,8 +55,8 @@
        * @return void
        */
       public function admin_options() { ?>
-        <h3><?php _e( $this->pluginTitle(), 'midtrans-woocommerce' ); ?></h3>
-        <p><?php _e($this->getSettingsDescription(), 'midtrans-woocommerce' ); ?></p>
+        <h3><?php _e( $this->pluginTitle(), 'Finpay-woocommerce' ); ?></h3>
+        <p><?php _e($this->getSettingsDescription(), 'Finpay-woocommerce' ); ?></p>
         <table class="form-table">
           <?php
             // Generate the HTML For the settings form. generated from `init_form_fields`
@@ -75,20 +75,20 @@
         // Use config fields template from abstract class
         parent::init_form_fields();
         // Specific config fields for this main gateway goes below
-        WC_Midtrans_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
+        WC_Finpay_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
           'acquring_bank' => array(
-            'title' => __( 'Acquiring Bank', 'midtrans-woocommerce'),
+            'title' => __( 'Acquiring Bank', 'Finpay-woocommerce'),
             'type' => 'text',
-            'label' => __( 'Acquiring Bank', 'midtrans-woocommerce' ),
-            'description' => __( 'You should leave it empty, it will be auto configured. </br> Alternatively may specify your card-payment acquiring bank for this payment option. </br> Options: BCA, BRI, DANAMON, MAYBANK, BNI, MANDIRI, CIMB, etc (Only choose 1 bank).' , 'midtrans-woocommerce' ),
+            'label' => __( 'Acquiring Bank', 'Finpay-woocommerce' ),
+            'description' => __( 'You should leave it empty, it will be auto configured. </br> Alternatively may specify your card-payment acquiring bank for this payment option. </br> Options: BCA, BRI, DANAMON, MAYBANK, BNI, MANDIRI, CIMB, etc (Only choose 1 bank).' , 'Finpay-woocommerce' ),
             'default' => ''
           )
         ));
         // Make this payment method enabled-checkbox 'yes' by default
         $this->form_fields['enabled']['default'] = 'yes';
         // Set icons config field specific placeholder
-        $this->form_fields['sub_payment_method_image_file_names_str']['placeholder'] = 'midtrans.png,credit_card.png';
-        $this->form_fields['sub_payment_method_image_file_names_str']['default'] = 'midtrans.png';
+        $this->form_fields['sub_payment_method_image_file_names_str']['placeholder'] = 'Finpay.png,credit_card.png';
+        $this->form_fields['sub_payment_method_image_file_names_str']['default'] = 'Finpay.png';
       }
 
       /**
@@ -115,7 +115,7 @@
         $order = new WC_Order( $order_id );
         // Get response object template
         $successResponse = $this->getResponseTemplate( $order );
-        // Get data for charge to midtrans API
+        // Get data for charge to Finpay API
         $params = $this->getPaymentRequestData( $order_id );
         // Add acquiring bank params
         if (strlen($this->get_option('acquring_bank')) > 0)
@@ -130,12 +130,12 @@
         // Empty the cart because payment is initiated.
         $woocommerce->cart->empty_cart();
         // allow merchant-defined custom filter function to modify snap $params
-        $params = apply_filters( 'midtrans_snap_params_main_before_charge', $params );
+        $params = apply_filters( 'Finpay_snap_params_main_before_charge', $params );
         try {
-          $snapResponse = WC_Midtrans_API::createSnapTransactionHandleDuplicate( $order, $params, $this->id );
+          $snapResponse = WC_Finpay_API::createSnapTransactionHandleDuplicate( $order, $params, $this->id );
         } catch (Exception $e) {
             $this->setLogError( $e->getMessage() );
-            WC_Midtrans_Utils::json_print_exception( $e, $this );
+            WC_Finpay_Utils::json_print_exception( $e, $this );
           exit();
         }
 
@@ -157,7 +157,7 @@
         // @TODO: default to yes or remove this options: enable_immediate_reduce_stock
         if(property_exists($this,'enable_immediate_reduce_stock') && $this->enable_immediate_reduce_stock == 'yes'){
           // Reduce item stock on WC, item also auto reduced on order `pending` status changes
-          // @NOTE: unable to replace with this code: `$order->update_status('on-hold',__('Customer proceed to Midtrans Payment page','midtrans-woocommerce'));`
+          // @NOTE: unable to replace with this code: `$order->update_status('on-hold',__('Customer proceed to Finpay Payment page','Finpay-woocommerce'));`
           // because of `This order’s status is “On hold”—it cannot be paid for.` 
           wc_reduce_stock_levels($order);
         }
@@ -189,28 +189,28 @@
        * @return string
        */
       public function pluginTitle() {
-        return "Midtrans";
+        return "Finpay";
       }
 
       /**
        * @return string
        */
       protected function getDefaultTitle () {
-        return __('All Supported Payment', 'midtrans-woocommerce');
+        return __('All Supported Payment', 'Finpay-woocommerce');
       }
 
       /**
        * @return string
        */
       protected function getSettingsDescription() {
-        return __('Secure payment via Midtrans that accept various payment methods, with mobile friendly built-in interface, or (optionally) redirection. This is the main payment button, 1 single button for multiple available payments methods. <a href="https://docs.midtrans.com/en/snap/with-plugins?id=woocommerce-plugin-configuration" target="_blank">Please follow "how-to configure guide" here</a>. Any feedback & request <a href="https://docs.midtrans.com/en/snap/with-plugins?id=feedback-and-request" target="_blank">let us know here</a>.', 'midtrans-woocommerce');
+        return __('Secure payment via Finpay that accept various payment methods, with mobile friendly built-in interface, or (optionally) redirection. This is the main payment button, 1 single button for multiple available payments methods. <a href="https://docs.Finpay.com/en/snap/with-plugins?id=woocommerce-plugin-configuration" target="_blank">Please follow "how-to configure guide" here</a>. Any feedback & request <a href="https://docs.Finpay.com/en/snap/with-plugins?id=feedback-and-request" target="_blank">let us know here</a>.', 'Finpay-woocommerce');
       }
 
       /**
        * @return string
        */
       protected function getDefaultDescription () {
-        return __('Accept all various supported payment methods. Choose your preferred payment on the next page. Secure payment via Midtrans.', 'midtrans-woocommerce');
+        return __('Accept all various supported payment methods. Choose your preferred payment on the next page. Secure payment via Finpay.', 'Finpay-woocommerce');
       }
 
     }

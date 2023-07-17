@@ -14,7 +14,7 @@ class Snap
      *
      * ```php
      *   
-     *   namespace Midtrans;
+     *   namespace Finpay;
      * 
      *   $params = array(
      *     'transaction_details' => array(
@@ -27,7 +27,7 @@ class Snap
      *
      * @param  array $params Payment options
      * @return string Snap token.
-     * @throws Exception curl error or midtrans error
+     * @throws Exception curl error or Finpay error
      */
     public static function getSnapToken($params)
     {
@@ -51,7 +51,7 @@ class Snap
      *
      * @param  array $params Payment options
      * @return object Snap response (token and redirect_url).
-     * @throws Exception curl error or midtrans error
+     * @throws Exception curl error or Finpay error
      */
     public static function createTransaction($params)
     {
