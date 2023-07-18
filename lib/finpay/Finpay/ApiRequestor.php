@@ -83,7 +83,7 @@ class ApiRequestor
         curl_setopt_array($ch, $curl_options);
 
         // For testing purpose
-        if (class_exists('\Finpay\VT_Tests') && VT_Tests::$stubHttp) {
+        if ($stubHttp) {
             $result = self::processStubed($curl_options, $url, $server_key, $data_hash, $post);
         } else {
             $result = curl_exec($ch);
@@ -117,7 +117,7 @@ class ApiRequestor
 
     private static function processStubed($curl, $url, $server_key, $data_hash, $post)
     {
-        VT_Tests::$lastHttpRequest = array(
+        $lastHttpRequest = array(
             "url" => $url,
             "server_key" => $server_key,
             "data_hash" => $data_hash,
@@ -125,6 +125,6 @@ class ApiRequestor
             "curl" => $curl
         );
 
-        return VT_Tests::$stubHttpResponse;
+        return $stubHttpResponse;
     }
 }

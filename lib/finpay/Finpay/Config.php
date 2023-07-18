@@ -47,10 +47,8 @@ class Config
      */
     public static $curlOptions = array();
 
-    const SANDBOX_BASE_URL = 'https://api.sandbox.Finpay.com/v2';
-    const PRODUCTION_BASE_URL = 'https://api.Finpay.com/v2';
-    const SNAP_SANDBOX_BASE_URL = 'https://app.sandbox.Finpay.com/snap/v1';
-    const SNAP_PRODUCTION_BASE_URL = 'https://app.Finpay.com/snap/v1';
+    const SANDBOX_BASE_URL = 'https://devo.finnet.co.id/pg/payment/card/initiate';
+    const PRODUCTION_BASE_URL = '	https://live.finnet.co.id/pg/payment/card/initiate';
 
     /**
      * Get baseUrl
@@ -62,15 +60,5 @@ class Config
         return Config::$isProduction ?
         Config::PRODUCTION_BASE_URL : Config::SANDBOX_BASE_URL;
     }
-
-    /**
-     * Get snapBaseUrl
-     * 
-     * @return string Snap API URL, depends on $isProduction
-     */
-    public static function getSnapBaseUrl()
-    {
-        return Config::$isProduction ?
-        Config::SNAP_PRODUCTION_BASE_URL : Config::SNAP_SANDBOX_BASE_URL;
-    }
+    
 }
