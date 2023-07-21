@@ -55,7 +55,7 @@ abstract class WC_Gateway_Finpay_Abstract_Sub extends WC_Gateway_Finpay_Abstract
   function init_form_fields() {
     $this->form_fields = 
     apply_filters(
-      'wc_Finpay_settings',
+      'wc_finpay_settings',
       array(
         'enabled'       => array(
           'title'     => __( 'Enable/Disable', 'finpay-woocommerce' ),
