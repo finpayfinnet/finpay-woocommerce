@@ -57,9 +57,9 @@ class WC_Gateway_Finpay_Notif_Handler
    * @TAG: finish_url_user_cookies
    */
   public function checkAndRedirectUserToFinishUrl(){
-    if(isset($_COOKIE['wc_Finpay_last_order_finish_url'])){
+    if(isset($_COOKIE['wc_finpay_last_order_finish_url'])){
       // authorized transacting-user
-      wp_redirect($_COOKIE['wc_Finpay_last_order_finish_url']);
+      wp_redirect($_COOKIE['wc_finpay_last_order_finish_url']);
     }else{
       // else, unauthorized user, redirect to shop homepage by default.
       wp_redirect( get_permalink( wc_get_page_id( 'shop' ) ) );
@@ -301,7 +301,7 @@ class WC_Gateway_Finpay_Notif_Handler
     }
     else if ($Finpay_notification->transaction_status == 'pending') {
       // Store snap token & snap redirect url to $order metadata
-      $order->update_meta_data('_mt_payment_transaction_id',$Finpay_notification->transaction_id);
+      $order->update_meta_data('_fp_payment_transaction_id',$Finpay_notification->transaction_id);
       $order->save();
 
       $plugin_options = $this->getPluginOptions($plugin_id);
@@ -377,14 +377,14 @@ class WC_Gateway_Finpay_Notif_Handler
         foreach ( $subscriptions as $subscription ) {
             // Store card token to meta if customer choose save card on previous payment
             if ($Finpay_notification->saved_token_id ) {
-              $subscription->update_meta_data('_mt_subscription_card_token',$Finpay_notification->saved_token_id);
+              $subscription->update_meta_data('_fp_subscription_card_token',$Finpay_notification->saved_token_id);
               $subscription->save();
             }
             // Customer didn't choose save card option on previous payment
             else {
               $subscription->add_order_note( __( 'Customer didn\'t tick <b>Save Card Info</b>. <br>The next payment on ' . $subscription->get_date('next_payment', 'site') . ' will fail.', 'finpay-woocommerce'), 1 );
               $order->add_order_note( __('Customer didn\'t tick <b>Save Card Info</b>, next payment will fail', 'finpay-woocommerce'), 1 );
-              $subscription->update_meta_data('_mt_subscription_card_token',$Finpay_notification->saved_token_id);
+              $subscription->update_meta_data('_fp_subscription_card_token',$Finpay_notification->saved_token_id);
               $subscription->save();
             }
         }

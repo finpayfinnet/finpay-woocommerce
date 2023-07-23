@@ -58,14 +58,11 @@ Payment Method Feature:
 	* Note: key for Sandbox & Production is different, make sure you use the correct one.
 	* Other configuration are optional, you may leave it as is.
 
-### Finpay&nbsp; MAP Configuration
+### Finpay Configuration
 
 1. Login to your [Finpay&nbsp; Account](https://dashboard.Finpay.com), select your environment (sandbox/production), go to menu **settings > configuration**
   * Insert `http://[your web]/?wc-api=WC_Gateway_Finpay` as your Payment Notification URL.
-  * Insert `http://[your web]/?wc-api=WC_Gateway_Finpay` link as Finish/Unfinish/Error Redirect URL.
-
-2. Go to menu **settings > Snap Preference > System Settings**
-  * Insert `http://[your web]/?wc-api=WC_Gateway_Finpay` link as Finish/Unfinish/Error Redirect URL.
+  * Insert `http://[your web]/?wc-api=WC_Gateway_Finpay` link as Finish/Unfinish/Error Redirect URL
 
 ### Additional Resource
 Note: This section is optional and only for advanced usage.
@@ -249,7 +246,5 @@ This plugin was mainly developed by following the official guideline from WooCom
 
 #### Get help
 
-* [SNAP-Woocommerce Wiki](https://github.com/veritrans/SNAP-Woocommerce/wiki)
-* [Veritrans registration](https://dashboard.Finpay.com/register)
-* [SNAP documentation](http://snap-docs.Finpay.com)
-* Can't find answer you looking for? email to [support@Finpay.com](mailto:support@Finpay.com)
+* [Finpay-Woocommerce Wiki](https://github.com/veritrans/SNAP-Woocommerce/wiki)
+* [Finpay registration](https://dashboard.Finpay.com/register)

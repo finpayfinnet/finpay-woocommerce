@@ -13,13 +13,13 @@ class Config
      * 
      * @static
      */
-    public static $serverKey;
+    public static $username;
     /**
      * Your merchant's client key
      * 
      * @static
      */
-    public static $clientKey;
+    public static $password;
     /**
      * True for production
      * false for sandbox mode
@@ -47,8 +47,8 @@ class Config
      */
     public static $curlOptions = array();
 
-    const SANDBOX_BASE_URL = 'https://devo.finnet.co.id/pg/payment/card/initiate';
-    const PRODUCTION_BASE_URL = '	https://live.finnet.co.id/pg/payment/card/initiate';
+    const SANDBOX_BASE_URL      = 'https://devo.finnet.co.id/pg/payment/card/initiate';
+    const PRODUCTION_BASE_URL   = 'https://live.finnet.co.id/pg/payment/card/initiate';
 
     /**
      * Get baseUrl

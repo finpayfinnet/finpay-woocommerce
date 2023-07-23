@@ -1,14 +1,14 @@
-// wc_midtrans var is passed from payment-page backend via inline script.
+// wc_finpay var is passed from payment-page backend via inline script.
 
 ;(function( window, document ) {
   var payButton = document.getElementById("pay-button");
 
   /**
-   * JS version of func `check_and_restore_original_order_id` of class `WC_Midtrans_Utils`
+   * JS version of func `check_and_restore_original_order_id` of class `WC_Finpay_Utils`
    * @TAG: order-suffix-separator
    */
   function check_and_restore_original_order_id(non_duplicate_order_id){
-    var suffix_separator = '-wc-mdtrs-';
+    var suffix_separator = '-wc-finpay-';
     var original_order_id = non_duplicate_order_id;
     if(non_duplicate_order_id && non_duplicate_order_id.indexOf(suffix_separator)>0){
       var splitted_order_id_strings = non_duplicate_order_id.split(suffix_separator);

@@ -15,7 +15,7 @@
        */
       function __construct() {
         $this->id           = 'Finpay_paymentrequest';
-        $this->method_title = __( $this->pluginTitle(), 'Finpay-woocommerce' );
+        $this->method_title = __( $this->pluginTitle(), 'finpay-woocommerce' );
         $this->method_description = $this->getSettingsDescription();
 
         parent::__construct();
@@ -24,8 +24,8 @@
       }
 
       public function admin_options() { ?>
-        <h3><?php _e( $this->pluginTitle(), 'Finpay-woocommerce' ); ?></h3>
-        <p><?php _e('Allows credit card payments using Finpay.', 'Finpay-woocommerce' ); ?></p>
+        <h3><?php _e( $this->pluginTitle(), 'finpay-woocommerce' ); ?></h3>
+        <p><?php _e('Allows credit card payments using Finpay.', 'finpay-woocommerce' ); ?></p>
         <table class="form-table">
           <?php
             // Generate the HTML For the settings form.

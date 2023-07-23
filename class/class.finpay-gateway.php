@@ -6,7 +6,7 @@
    *
    * @category   Wordrpress-WooCommerce Payment Plugin
    * @author     Caisar Oentoro <caisar@finnet.co.id>
-   * @link       http://docs.Finpay.com
+   * @link       https://hub.finpay.id/docs/overview
    * (This plugin is made based on Payment Plugin Template by WooCommerce)
    *
    * LICENSE: This program is free software; you can redistribute it and/or
@@ -38,7 +38,7 @@
          * Fetch config option field values and set it as private variables
          */
         $this->id           = 'Finpay';
-        $this->method_title = __( $this->pluginTitle(), 'Finpay-woocommerce' );
+        $this->method_title = __( $this->pluginTitle(), 'finpay-woocommerce' );
         $this->method_description = $this->getSettingsDescription();
         $this->has_fields   = true;
 
@@ -75,6 +75,7 @@
         // Use config fields template from abstract class
         parent::init_form_fields();
         // Specific config fields for this main gateway goes below
+        // var_dump('nyampe sini');exit();
         WC_Finpay_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
           'acquring_bank' => array(
             'title' => __( 'Acquiring Bank', 'Finpay-woocommerce'),
@@ -89,6 +90,7 @@
         // Set icons config field specific placeholder
         $this->form_fields['sub_payment_method_image_file_names_str']['placeholder'] = 'Finpay.png,credit_card.png';
         $this->form_fields['sub_payment_method_image_file_names_str']['default'] = 'Finpay.png';
+        // var_dump($this -> form_fields);exit();
       }
 
       /**
@@ -203,7 +205,7 @@
        * @return string
        */
       protected function getSettingsDescription() {
-        return __('Secure payment via Finpay that accept various payment methods, with mobile friendly built-in interface, or (optionally) redirection. This is the main payment button, 1 single button for multiple available payments methods. <a href="https://docs.Finpay.com/en/snap/with-plugins?id=woocommerce-plugin-configuration" target="_blank">Please follow "how-to configure guide" here</a>. Any feedback & request <a href="https://docs.Finpay.com/en/snap/with-plugins?id=feedback-and-request" target="_blank">let us know here</a>.', 'Finpay-woocommerce');
+        return __('Secure payment via Finpay that accept various payment methods. This is the main payment button, 1 single button for multiple available payments methods. <a href="https://docs.Finpay.com/en/snap/with-plugins?id=woocommerce-plugin-configuration" target="_blank">Please follow "how-to configure guide" here</a>. Any feedback & request <a href="https://docs.Finpay.com/en/snap/with-plugins?id=feedback-and-request" target="_blank">let us know here</a>.', 'Finpay-woocommerce');
       }
 
       /**

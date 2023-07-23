@@ -11,7 +11,7 @@
        * Constructor
        */
       function __construct() {
-        $this->id           = 'Finpay_installment';
+        $this->id           = 'finpay_installment';
         $this->method_title = __( $this->pluginTitle(), 'finpay-woocommerce' );
         $this->method_description = $this->getSettingsDescription();
 
@@ -102,8 +102,8 @@
         }
 
         // Add snap token & snap redirect url to $order metadata
-        $order->update_meta_data('_mt_payment_snap_token',$snapResponse->token);
-        $order->update_meta_data('_mt_payment_url',$snapResponse->redirect_url);
+        $order->update_meta_data('_fp_payment_snap_token',$snapResponse->token);
+        $order->update_meta_data('_fp_payment_url',$snapResponse->redirect_url);
         $order->save();
         // set wc order's finish_url on user's session cookie
         $this->set_finish_url_user_cookies($order);

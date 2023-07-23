@@ -17,7 +17,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    */
   public function __construct() {
     $this->has_fields   = true;
-    $this->icon         = apply_filters( 'woocommerce_Finpay_icon', '' );
+    $this->icon         = apply_filters( 'woocommerce_finpay_icon', '' );
     // Load the settings
     $this->init_form_fields();
     $this->init_settings();
@@ -29,9 +29,9 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     $this->title              = $this->get_option( 'title' );
     $this->description        = $this->get_option( 'description' );
     $this->sub_payment_method_image_file_names_str = $this->get_option( 'sub_payment_method_image_file_names_str' );
-    $this->environment        = $this->get_option( 'select_Finpay_environment' );
-    $this->client_key = ($this->environment == 'production') ? $this->get_option( 'client_key_v2_production' ) : $this->get_option( 'client_key_v2_sandbox' );
-    $this->server_key = ($this->environment == 'production') ? $this->get_option( 'server_key_v2_production' ) : $this->get_option( 'server_key_v2_sandbox' );
+    $this->environment        = $this->get_option( 'select_finpay_environment' );
+    $this->client_key = ($this->environment == 'production') ? $this->get_option( 'client_key_production' ) : $this->get_option( 'client_key_sandbox' );
+    $this->server_key = ($this->environment == 'production') ? $this->get_option( 'server_key_production' ) : $this->get_option( 'server_key_sandbox' );
     $this->enable_3d_secure   = $this->get_option( 'enable_3d_secure' );
     $this->enable_savecard   = $this->get_option( 'enable_savecard' );
     $this->enable_redirect   = $this->get_option( 'enable_redirect' );
@@ -43,12 +43,13 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     $this->enable_immediate_reduce_stock   = $this->get_option( 'enable_immediate_reduce_stock' );
     $this->to_idr_rate = apply_filters( 'Finpay_to_idr_rate', $this->get_option( 'to_idr_rate' ));
     $this->log = new WC_Logger();
+    // var_dump('nyampe this log');exit();
 
     add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( &$this, 'process_admin_options' ) );
     
     // Hook for adding JS script to admin config page 
-    add_action( 'admin_print_scripts-woocommerce_page_woocommerce_settings', array( &$this, 'Finpay_admin_scripts' ));
-    add_action( 'admin_print_scripts-woocommerce_page_wc-settings', array( &$this, 'Finpay_admin_scripts' ));
+    add_action( 'admin_print_scripts-woocommerce_page_woocommerce_settings', array( &$this, 'finpay_admin_scripts' ));
+    add_action( 'admin_print_scripts-woocommerce_page_wc-settings', array( &$this, 'finpay_admin_scripts' ));
     // Hook for adding custom HTML on thank you page (for payement/instruction url)
     add_action( 'woocommerce_thankyou', array( $this, 'view_order_and_thankyou_page' ) );
     // Hook for adding custom HTML on view order menu from customer (for payement/instruction url)
@@ -56,10 +57,10 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     // Hook for refund request from Finpay Dashboard or API refund
     add_action( 'create-refund-request',  array( $this, 'Finpay_refund' ), 10, 4 );
     // Custom hook to customize rate convertion
-    add_filter('Finpay_to_idr_rate', function ($Finpay_rate) {
+    add_filter('finpay_to_idr_rate', function ($Finpay_rate) {
       return $Finpay_rate;
     });
-    if($this->id == 'Finpay') {
+    if($this->id == 'finpay') {
       // init notif handler class, which also add action hook to handle notif on woocommerce_api_wc_Gateway_Finpay
       // @TODO refactor this
       $notifHandler = new WC_Gateway_Finpay_Notif_Handler();
@@ -70,24 +71,25 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * Enqueue Javascripts
    * Add JS script file to admin page
   */
-  public function Finpay_admin_scripts() {
-    wp_enqueue_script( 'admin-Finpay', Finpay_PLUGIN_DIR_URL . 'public/js/Finpay-admin-page.js' );
+  public function finpay_admin_scripts() {
+    wp_enqueue_script( 'admin-finpay', FINPAY_PLUGIN_DIR_URL . 'public/js/finpay-admin-page.js' );
   }
 
   /**
    * Initialise Gateway Settings Form Fields
    */
   public function init_form_fields() {
-    $this->form_fields = require( dirname(__FILE__) . '/../class/Finpay-admin-settings.php' );
+    // var_dump('masuk sini');exit();
+    $this->form_fields = require( dirname(__FILE__) . '/../class/finpay-admin-settings.php' );
     // Currency conversion rate if currency is not IDR
-    if (get_woocommerce_currency() != 'IDR') {
-      $this->form_fields['to_idr_rate'] = array(
-        'title' => __("Current Currency to IDR Rate", 'Finpay-woocommerce'),
-        'type' => 'text',
-        'description' => 'The current currency to IDR rate',
-        'default' => '10000',
-      );
-    }
+    // if (get_woocommerce_currency() != 'IDR') {
+    //   $this->form_fields['to_idr_rate'] = array(
+    //     'title' => __("Current Currency to IDR Rate", 'finpay-woocommerce'),
+    //     'type' => 'text',
+    //     'description' => 'The current currency to IDR rate',
+    //     'default' => '10000',
+    //   );
+    // }
   }
 
   /**
@@ -317,7 +319,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     try {
       $params['metadata'] = array(
         'x_Finpay_wc_plu' => array(
-          'version' => Finpay_PLUGIN_VERSION,
+          'version' => FINPAY_PLUGIN_VERSION,
           'wc' => WC_VERSION,
           'php' => phpversion()
         )

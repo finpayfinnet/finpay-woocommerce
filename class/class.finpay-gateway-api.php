@@ -12,10 +12,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_Finpay_API {
 
 	/**
-	 * Server Key.
+	 * Username.
 	 * @var string
 	 */
-	private static $server_key = '';
+	private static $username = '';
+    
+
+    /**
+     * Passowrd.
+     * @var string
+     */
+    private static $password = '';
 
 	/**
 	 * Finpay Environment.
@@ -30,11 +37,19 @@ class WC_Finpay_API {
 	private static $plugin_options;
 	
 	/**
-	 * Set Server Key.
-	 * @param string $key
+	 * Set Username.
+	 * @param string $username
 	 */
-	public static function set_server_key( $server_key ) {
-		self::$server_key = $server_key;
+	public static function set_username( $username ) {
+		self::$username = $username;
+    }
+
+    /**
+     * Set Password.
+     * @param string $password
+     */
+    public static function set_password($password){
+        self::$password = $password;
     }
 
 	/**
@@ -50,23 +65,37 @@ class WC_Finpay_API {
 	 * Fetch Plugin Options and Set as self/private vars
 	 * @param string $plugin_id
 	 */
-	public static function fetchAndSetCurrentPluginOptions ( $plugin_id="Finpay" ) {
+	public static function fetchAndSetCurrentPluginOptions ( $plugin_id="finpay" ) {
 		self::$plugin_options = get_option( 'woocommerce_' . $plugin_id . '_settings' );
 	}
 
 	/**
-	 * Get Server Key.
+	 * Get Username.
 	 * @return string
 	 */
-	public static function get_server_key() {
-		if ( ! self::$server_key ) {
+	public static function get_username() {
+		if ( ! self::$username ) {
 			$plugin_options = self::$plugin_options;
-			if ( isset( $plugin_options['server_key_v2_production'], $plugin_options['server_key_v2_sandbox'] ) ) {
-				self::set_server_key( self::get_environment() == 'production' ? $plugin_options['server_key_v2_production'] : $plugin_options['server_key_v2_sandbox'] );
+			if ( isset( $plugin_options['username_production'], $plugin_options['username_sandbox'] ) ) {
+				self::set_username( self::get_environment() == 'production' ? $plugin_options['username_production'] : $plugin_options['username_sandbox'] );
 			}
 		}
-		return self::$server_key;
+		return self::$username;
 	}
+
+
+    /**
+     * Get Passowrd.
+     * @return string
+     */
+    public static function get_password(){
+        if( ! self::$password){
+            $plugin_options = self::$plugin_options;
+            if( isset($plugin_options['password_productoin'], $plugin_options['password_sandbox'])) {
+                self::set_password( self::get_environment() == 'production' ? $plugin_options['password_production'] : $plugin_options['password_sandbox'] );
+            }
+        }
+    }
 
     /**
 	 * Get Finpay Environment.
@@ -75,8 +104,8 @@ class WC_Finpay_API {
 	public static function get_environment() {
 		if ( ! self::$environment ) {
 			$plugin_options = self::$plugin_options;
-			if ( isset( $plugin_options['select_Finpay_environment'] ) ) {
-				self::set_environment( $plugin_options['select_Finpay_environment'] );
+			if ( isset( $plugin_options['select_finpay_environment'] ) ) {
+				self::set_environment( $plugin_options['select_finpay_environment'] );
 			}
 		}
 		return self::$environment;
@@ -93,7 +122,8 @@ class WC_Finpay_API {
         }
 		self::fetchAndSetCurrentPluginOptions( $plugin_id );
         Finpay\Config::$isProduction = (self::get_environment() == 'production') ? true : false;
-        Finpay\Config::$serverKey = self::get_server_key();     
+        Finpay\Config::$username = self::get_username();
+        Finpay\Config::$password = self::get_password();     
         Finpay\Config::$isSanitized = true;
 
         // setup custom HTTP client header as identifier ref:
@@ -114,47 +144,35 @@ class WC_Finpay_API {
      * @return object Snap response (token and redirect_url).
      * @throws Exception curl error or Finpay error.
      */
-    public static function createSnapTransactionHandleDuplicate( $order, $params, $plugin_id="Finpay") {
-        try {
-            $response = self::createSnapTransaction($params, $plugin_id);
-        } catch (Exception $e) {
-            // Handle: Snap order_id duplicated, retry with suffixed order_id
-            if( strpos($e->getMessage(), 'transaction_details.order_id sudah digunakan') !== false) {
-                self::setLogRequest( $e->getMessage().' - Attempt to auto retry with suffixed order_id', $plugin_id );
-                // @TAG: order-id-suffix-handling
-                $params['transaction_details']['order_id'] = 
-                    WC_Finpay_Utils::generate_non_duplicate_order_id($params['transaction_details']['order_id']);
-                $response =  self::createSnapTransaction($params, $plugin_id);
+    // public static function createSnapTransactionHandleDuplicate( $order, $params, $plugin_id="Finpay") {
+    //     try {
+    //         $response = self::createSnapTransaction($params, $plugin_id);
+    //     } catch (Exception $e) {
+    //         // Handle: Snap order_id duplicated, retry with suffixed order_id
+    //         if( strpos($e->getMessage(), 'transaction_details.order_id sudah digunakan') !== false) {
+    //             self::setLogRequest( $e->getMessage().' - Attempt to auto retry with suffixed order_id', $plugin_id );
+    //             // @TAG: order-id-suffix-handling
+    //             $params['transaction_details']['order_id'] = 
+    //                 WC_Finpay_Utils::generate_non_duplicate_order_id($params['transaction_details']['order_id']);
+    //             $response =  self::createSnapTransaction($params, $plugin_id);
                 
-                // store the suffixed order id to order metadata
-                // @TAG: order-id-suffix-handling-meta
-                $order->update_meta_data('_mt_suffixed_Finpay_order_id', $params['transaction_details']['order_id']);
-            } else {
-                throw $e;
-            }
-        }
-        return $response;
-    }
+    //             // store the suffixed order id to order metadata
+    //             // @TAG: order-id-suffix-handling-meta
+    //             $order->update_meta_data('_mt_suffixed_Finpay_order_id', $params['transaction_details']['order_id']);
+    //         } else {
+    //             throw $e;
+    //         }
+    //     }
+    //     return $response;
+    // }
 
-    /**
-     * Create Snap Token.
-     * @param  array $params Payment options.
-     * @return object Snap response (token and redirect_url).
-     * @throws Exception curl error or Finpay error.
-     */
-    public static function createSnapTransaction( $params, $plugin_id="Finpay" ) {
-        self::fetchAndSetFinpayApiConfig( $plugin_id );
-		self::setLogRequest( print_r( $params, true ), $plugin_id );
-        return Finpay\Snap::createTransaction( $params );
-	}
-	
     /**
      * Create Recurring Transaction for Subscription Payment.
      * @param  array $params Payment options.
      * @return object Core API response (token and redirect_url).
      * @throws Exception curl error or Finpay error.
      */
-    public static function createRecurringTransaction( $params, $plugin_id = 'Finpay_subscription' ) {
+    public static function createRecurringTransaction( $params, $plugin_id = 'finpay_subscription' ) {
 		self::fetchAndSetFinpayApiConfig( $plugin_id );
 		self::setLogRequest( print_r( $params, true ), $plugin_id );
 		return Finpay\CoreApi::charge( $params );
@@ -168,7 +186,7 @@ class WC_Finpay_API {
      * @return object Refund response.
      * @throws Exception curl error or Finpay error.
      */
-    public static function createRefund( $order_id, $params, $plugin_id="Finpay" ) {
+    public static function createRefund( $order_id, $params, $plugin_id="finpay" ) {
 		self::fetchAndSetFinpayApiConfig( $plugin_id );
 		self::setLogRequest( print_r( $params, true ), $plugin_id );
 		return Finpay\Transaction::refund($order_id, $params);
@@ -178,7 +196,7 @@ class WC_Finpay_API {
      * Get Finpay Notification.
      * @return object Finpay Notification response.
      */
-    public static function getStatusFromFinpayNotif( $plugin_id="Finpay") {
+    public static function getStatusFromFinpayNotif( $plugin_id="finpay") {
         self::fetchAndSetFinpayApiConfig( $plugin_id );
         return new Finpay\Notification();
     }
@@ -188,7 +206,7 @@ class WC_Finpay_API {
      * @param string $id Order ID or transaction ID.
      * @return object Finpay response.
      */
-    public static function getFinpayStatus( $order_id, $plugin_id="Finpay" ) {
+    public static function getFinpayStatus( $order_id, $plugin_id="finpay" ) {
         self::fetchAndSetFinpayApiConfig( $plugin_id );
         return Finpay\Transaction::status( $order_id );
     }
@@ -200,7 +218,7 @@ class WC_Finpay_API {
 	 * @param string $plugin_id Plugin id.
 	 * @return object Finpay response.
 	 */
-    public static function CancelTransaction( $id, $plugin_id="Finpay" ) {
+    public static function CancelTransaction( $id, $plugin_id="finpay" ) {
 		self::fetchAndSetFinpayApiConfig( $plugin_id );
 		self::setLogRequest('Request Cancel Transaction ' . $id, $plugin_id );
         return Finpay\Transaction::cancel( $id );
@@ -212,7 +230,7 @@ class WC_Finpay_API {
      * @param string $message payload request.
      * @return void
      */
-	public static function setLogRequest( $message, $plugin_id="Finpay" ) {
-		WC_Finpay_Logger::log( $message, 'Finpay-request', $plugin_id, current_time( 'timestamp') );
+	public static function setLogRequest( $message, $plugin_id="finpay" ) {
+		WC_Finpay_Logger::log( $message, 'finpay-request', $plugin_id, current_time( 'timestamp') );
 	  }
 }

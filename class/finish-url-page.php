@@ -8,16 +8,16 @@
 // reference: https://www.cloudways.com/blog/creating-custom-page-template-in-wordpress/
 
 /**
- * Handle a custom '_mt_payment_transaction_id' query var to get orders with the '_mt_payment_transaction_id' meta.
+ * Handle a custom '_fp_payment_transaction_id' query var to get orders with the '_fp_payment_transaction_id' meta.
  * @param array $query - Args for WP_Query.
  * @param array $query_vars - Query vars from WC_Order_Query.
  * @return array modified $query
  */
 function finpay_handle_custom_query_var( $query, $query_vars ) {
-	if ( ! empty( $query_vars['_mt_payment_transaction_id'] ) ) {
+	if ( ! empty( $query_vars['_fp_payment_transaction_id'] ) ) {
 		$query['meta_query'][] = array(
-			'key' => '_mt_payment_transaction_id',
-			'value' => esc_attr( $query_vars['_mt_payment_transaction_id'] ),
+			'key' => '_fp_payment_transaction_id',
+			'value' => esc_attr( $query_vars['_fp_payment_transaction_id'] ),
 		);
 	}
 
@@ -29,7 +29,7 @@ try {
 	if(isset($_GET['id'])){ // handler for BCA_Klikpay finish redirect
 		$trx_id = sanitize_text_field($_GET['id']);
 		// Get order from transaction_id meta data
-		$order = wc_get_orders( array( '_mt_payment_transaction_id' => $trx_id ) );
+		$order = wc_get_orders( array( '_fp_payment_transaction_id' => $trx_id ) );
 		$plugin_id = isset($order) && $order[0] ? $order[0]->get_payment_method() : 'Finpay';
 		$Finpay_notification = WC_Finpay_API::getFinpayStatus($trx_id, $plugin_id);
 	}else if(isset($_POST['response'])){ // handler for CIMB CLICKS finish redirect

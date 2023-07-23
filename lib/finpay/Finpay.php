@@ -22,10 +22,10 @@ require_once 'Finpay/Transaction.php';
 
 // Plumbing
 require_once 'Finpay/ApiRequestor.php';
-require_once 'Finpay/SnapApiRequestor.php';
+// require_once 'Finpay/SnapApiRequestor.php';
 require_once 'Finpay/Notification.php';
 require_once 'Finpay/CoreApi.php';
-require_once 'Finpay/Snap.php';
+// require_once 'Finpay/Snap.php';
 
 // Sanitization
 require_once 'Finpay/Sanitizer.php';
