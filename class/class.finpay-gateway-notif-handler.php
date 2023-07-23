@@ -201,7 +201,7 @@ class WC_Gateway_Finpay_Notif_Handler
       } else if (!empty($sanitized['id']) || (!empty($sanitized['wc-api']) && strlen($sanitized['wc-api']) >= 25) ){
         // Workaround if id query string is malformed, manual substring
         if (!empty($sanitized['wc-api']) && strlen($sanitized['wc-api']) >= 25) {
-          $id = str_replace("WC_Gateway_finpay?id=", "", $sanitized['wc-api']);
+          $id = str_replace("WC_Gateway_Finpay?id=", "", $sanitized['wc-api']);
         }
         // else if id query string format is correct
         else {

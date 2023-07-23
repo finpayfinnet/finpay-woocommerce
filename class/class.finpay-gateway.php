@@ -37,7 +37,7 @@
         /**
          * Fetch config option field values and set it as private variables
          */
-        $this->id           = 'Finpay';
+        $this->id           = 'finpay';
         $this->method_title = __( $this->pluginTitle(), 'finpay-woocommerce' );
         $this->method_description = $this->getSettingsDescription();
         $this->has_fields   = true;
@@ -54,9 +54,11 @@
        * @access public
        * @return void
        */
-      public function admin_options() { ?>
-        <h3><?php _e( $this->pluginTitle(), 'Finpay-woocommerce' ); ?></h3>
-        <p><?php _e($this->getSettingsDescription(), 'Finpay-woocommerce' ); ?></p>
+      public function admin_options() { 
+        // echo 'kesini nggak';exit();
+        ?>
+        <h3><?php _e( $this->pluginTitle(), 'finpay-woocommerce' ); ?></h3>
+        <p><?php _e($this->getSettingsDescription(), 'finpay-woocommerce' ); ?></p>
         <table class="form-table">
           <?php
             // Generate the HTML For the settings form. generated from `init_form_fields`

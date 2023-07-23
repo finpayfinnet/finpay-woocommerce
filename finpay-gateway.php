@@ -93,9 +93,9 @@ function finpay_gateway_init() {
   // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-indomaret.php';
 
   // Add this payment method if WooCommerce Subscriptions plugin activated
-  if( class_exists( 'WC_Subscriptions' ) ) {
-    require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-subscription.php';
-  }
+  // if( class_exists( 'WC_Subscriptions' ) ) {
+  //   require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-subscription.php';
+  // }
 
   add_filter( 'woocommerce_payment_gateways', 'finpay_add_payment_gateway' );
   add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'finpay_plugin_action_links' );

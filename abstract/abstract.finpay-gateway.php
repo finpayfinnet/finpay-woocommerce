@@ -217,12 +217,12 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
       foreach( $order->get_items() as $item ) {
         if ( $item['qty'] ) {
           // $product = $order->get_product_from_item( $item );
-          $Finpay_item = array();
-          $Finpay_item['id']    = $item['product_id'];
-          $Finpay_item['price']      = ceil($order->get_item_subtotal( $item, false ));
-          $Finpay_item['quantity']   = $item['qty'];
-          $Finpay_item['name'] = $item['name'];
-          $items[] = $Finpay_item;
+          $f_item = array();
+          $f_item['sku']    = $item['product_id'];
+          $f_item['unitPrice']      = ceil($order->get_item_subtotal( $item, false ));
+          $f_item['quantity']   = $item['qty'];
+          $f_item['name'] = $item['name'];
+          $items[] = $f_item;
         }
       }
     }
@@ -230,8 +230,8 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     // Shipping fee as item_details
     if( $order->get_total_shipping() > 0 ) {
       $items[] = array(
-        'id' => 'shippingfee',
-        'price' => ceil($order->get_total_shipping()),
+        'sku' => 'shippingfee',
+        'unitPrice' => ceil($order->get_total_shipping()),
         'quantity' => 1,
         'name' => 'Shipping Fee',
       );
@@ -240,8 +240,8 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     // Tax as item_details
     if( $order->get_total_tax() > 0 ) {
       $items[] = array(
-        'id' => 'taxfee',
-        'price' => ceil($order->get_total_tax()),
+        'sku' => 'taxfee',
+        'unitPrice' => ceil($order->get_total_tax()),
         'quantity' => 1,
         'name' => 'Tax',
       );
@@ -250,8 +250,8 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     // Discount as item_details
     if ( $order->get_total_discount() > 0) {
       $items[] = array(
-        'id' => 'totaldiscount',
-        'price' => ceil($order->get_total_discount())  * -1,
+        'sku' => 'totaldiscount',
+        'unitPrice' => ceil($order->get_total_discount())  * -1,
         'quantity' => 1,
         'name' => 'Total Discount'
       );
@@ -263,8 +263,8 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
       $i = 0;
       foreach( $fees as $item ) {
         $items[] = array(
-          'id' => 'itemfee' . $i,
-          'price' => ceil($item['line_total']),
+          'sku' => 'itemfee' . $i,
+          'unitPrice' => ceil($item['line_total']),
           'quantity' => 1,
           'name' => $item['name'],
         );
@@ -454,7 +454,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
         // remove whitespaces
         $image_file_name = str_replace(' ', '', $image_file_name);
         // prefix with internal image url
-        $image_url = Finpay_PLUGIN_DIR_URL.'public/images/payment-methods/'.$image_file_name;
+        $image_url = FINPAY_PLUGIN_DIR_URL.'public/images/payment-methods/'.$image_file_name;
         if(strpos($image_file_name, '://') !== false){
           // image is absolute url, external, don't prefix.
           $image_url = $image_file_name;

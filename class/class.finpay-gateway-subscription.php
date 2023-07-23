@@ -2,7 +2,7 @@
   /**
    * finpay Payment Subscription Gateway Class.
    */
-  class WC_Gateway_finpay_Subscription extends WC_Gateway_finpay_Abstract {
+  class WC_Gateway_Finpay_Subscription extends WC_Gateway_finpay_Abstract {
       
     /**
      * Constructor.

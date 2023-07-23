@@ -36,7 +36,8 @@ abstract class WC_Gateway_Finpay_Abstract_Sub extends WC_Gateway_Finpay_Abstract
    * @access public
    * @return void
    */
-  public function admin_options() { ?>
+  public function admin_options() { 
+    ?>
     <h3><?php _e( $this->pluginTitle(), 'finpay-woocommerce' ); ?></h3>
     <p><?php _e( $this->getSettingsDescription(), 'finpay-woocommerce' ); ?></p>
     <table class="form-table">
