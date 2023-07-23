@@ -25,7 +25,6 @@ Payment Method Feature:
 * Credit card MIGS acquiring channel.
 * Custom expiry.
 * Two-click & One-click feature.
-* Finpay Snap all supported payment method.
 * Optional: Separated specific payment buttons with its own icons.
 
 
