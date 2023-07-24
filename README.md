@@ -53,13 +53,13 @@ Payment Method Feature:
 5. Go to menu **WooCommerce > Settings > Payment > Finpay > Manage**, fill the configuration fields.
 	* Fill **Title** with text button that you want to display to customer
 	* Select **Environment**, Sandbox is for testing transaction, Production is for real transaction
-	* Fill in the **client key** & **server key** with your corresonding [Finpay&nbsp; account](https://dashboard.Finpay.com/) credentials
+	* Fill in the **username** & **password** with your corresonding [Finpay&nbsp; account](https://dashboard.finpay.id/) credentials
 	* Note: key for Sandbox & Production is different, make sure you use the correct one.
 	* Other configuration are optional, you may leave it as is.
 
 ### Finpay Configuration
 
-1. Login to your [Finpay&nbsp; Account](https://dashboard.Finpay.com), select your environment (sandbox/production), go to menu **settings > configuration**
+1. Login to your [Finpay&nbsp; Account](https://dashboard.finpay.id), select your environment (sandbox/production), go to menu **settings > configuration**
   * Insert `http://[your web]/?wc-api=WC_Gateway_Finpay` as your Payment Notification URL.
   * Insert `http://[your web]/?wc-api=WC_Gateway_Finpay` link as Finish/Unfinish/Error Redirect URL
 
@@ -103,7 +103,7 @@ If you are activating BCA Klikpay payment channel, follow this additional step. 
 1. Login to Wordpress Admin Panel / Dashboard
 2. Add new page by going to menu **Pages > Add new**
 3. Insert this as title: `Finpay-payment-finish`. Makesure the permalink display `[your wordpress url]/Finpay-payment-finish`. Click **Publish/Save**.
-4. Login to your [Finpay&nbsp; Account](https://dashboard.Finpay.com), select your environment (sandbox/production), go to menu **settings > Snap Preference > System Settings**
+4. Login to your [Finpay&nbsp; Account](https://dashboard.finpay.id), select your environment (sandbox/production), go to menu **settings > Snap Preference > System Settings**
 5. Go to menu **settings > configuration**. Then change Finish Redirect URL to `http://[your wordpress url]/Finpay-payment-finish`.
 
 This is to ensure we have finish page when customer has completed the payment on KlikPay page, and then the payment result will be displayed accordingly on the page. If you want to customize the finish page, edit this file `/class/finish-url-page.php`.
@@ -246,4 +246,4 @@ This plugin was mainly developed by following the official guideline from WooCom
 #### Get help
 
 * [Finpay-Woocommerce Wiki](https://github.com/veritrans/SNAP-Woocommerce/wiki)
-* [Finpay registration](https://dashboard.Finpay.com/register)
+* [Finpay registration](https://dashboard.finpay.id/register)
