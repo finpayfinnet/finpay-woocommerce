@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: finpay - WooCommerce Payment Gateway
-Plugin URI: https://github.com/veritrans/SNAP-Woocommerce
+Plugin URI: https://github.com/finpayfinnet/finpay-woocommerce
 Description: Accept all payment directly on your WooCommerce site in a seamless and secure checkout environment with <a  target="_blank" href="https://finpay.com/">finpay</a>
 Version: 2.32.2
-Author: finpay
-Author URI: http://finpay.co.id
+Author: Finpay
+Author URI: https://finpay.id
 License: GPLv2 or later
 WC requires at least: 2.0.0
 WC tested up to: 7.2.2
@@ -33,8 +33,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
    * This plugin allow your Wordrpress-WooCommerce to accept payment from customer using finpay Payment Gateway solution.
    *
    * @category   Wordrpress-WooCommerce Payment Plugin
-   * @author     Rizda Dwi Prasetya <rizda.prasetya@finpay.com>
-   * @link       http://docs.finpay.com
+   * @author     Caisar Oentoro <caisar@finnet.co.id>
+   * @link       https://hub.finpay.id/
    * (This plugin is made based on Payment Plugin Template by WooCommerce)
    */
   
@@ -67,10 +67,10 @@ function finpay_gateway_init() {
   // main gateway imports
   require_once dirname( __FILE__ ) . '/class/class.finpay-gateway.php';
   // sub gateway imports
-  require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-installment.php';
-  require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-installmentoff.php';
-  require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-promo.php';
-  require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-paymentrequest.php';
+  // require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-installment.php';
+  // require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-installmentoff.php';
+  // require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-promo.php';
+  // require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-paymentrequest.php';
   // shared abstract import for sub separated gateway buttons
   // require_once dirname( __FILE__ ) . '/abstract/abstract.finpay-gateway-sub.php';
   // sub separated gateway buttons imports, add new methods under here

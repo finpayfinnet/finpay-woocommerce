@@ -42,6 +42,7 @@ class WC_Gateway_Finpay_Notif_Handler
     $raw_notification = json_decode(file_get_contents($input_source), true);
     echo esc_html("Notification Received: \n");
     print_r($raw_notification);
+    wc_get_logger()->debug('POST NOTIFICATION: '.json_encode($raw_notification));
     WC_Finpay_Logger::log( print_r($raw_notification, true), 'finpay-notif' );
     header('Connection: close');
     header('Content-Length: '.ob_get_length());
@@ -89,7 +90,6 @@ class WC_Gateway_Finpay_Notif_Handler
   public function handleFinpayNotificationRequest() {
     @ob_clean();
     global $woocommerce;
-
     $sanitized = [];
     $sanitized['order_id'] = 
       isset($_GET['order_id'])? sanitize_text_field($_GET['order_id']): null;
@@ -102,8 +102,8 @@ class WC_Gateway_Finpay_Notif_Handler
       isset($_POST['response'])? sanitize_text_field($_POST['response']): null;
 
     // @TAG: order-id-suffix-handling
-    $sanitized['order_id'] = 
-      WC_Finpay_Utils::check_and_restore_original_order_id($sanitized['order_id']);
+    $sanitized['order']['id'] = 
+      WC_Finpay_Utils::check_and_restore_original_order_id($sanitized['order']['id']);
 
     // check whether the request is POST or GET, 
     // @TODO: refactor this conditions, this doesn't quite represent conditions for a POST request
@@ -215,7 +215,7 @@ class WC_Gateway_Finpay_Notif_Handler
         // @TODO remove this order_id? seems unused
         // @TAG: order-id-suffix-handling
         $order_id = 
-          WC_Finpay_Utils::check_and_restore_original_order_id($Finpay_notification->order_id);
+          WC_Finpay_Utils::check_and_restore_original_order_id($finpay_notification->order_id);
         // if async payment paid
         if ($finpay_notification->transaction_status == 'settlement'){
           $this->checkAndRedirectUserToFinishUrl();
@@ -239,15 +239,15 @@ class WC_Gateway_Finpay_Notif_Handler
    * notification
    * @return void
    */
-  public function handlefinpayValidNotificationRequest( $Finpay_notification, $plugin_id = 'finpay' ) {
+  public function handlefinpayValidNotificationRequest( $finpay_notification, $plugin_id = 'finpay' ) {
     global $woocommerce;
     // @TAG: order-id-suffix-handling
-    $order_id = WC_Finpay_Utils::check_and_restore_original_order_id($Finpay_notification->order_id);
+    $order_id = WC_Finpay_Utils::check_and_restore_original_order_id($finpay_notification->order_id);
     $order = new WC_Order( $order_id );
-    $order->add_order_note(__('finpay HTTP notification received: '.$Finpay_notification->transaction_status.'. finpay-'.$Finpay_notification->payment_type,'finpay-woocommerce'));
+    $order->add_order_note(__('finpay HTTP notification received: '.$finpay_notification->transaction_status.'. finpay-'.$finpay_notification->payment_type,'finpay-woocommerce'));
     
     // allow merchant-defined custom action function to perform action on $order upon notif handling
-    do_action( 'Finpay_on_notification_received', $order, $Finpay_notification );
+    do_action( 'Finpay_on_notification_received', $order, $finpay_notification );
     
     /**
      * @TODO: maybe refactor this if-else branch, store the condition into variable e.g: 
@@ -255,19 +255,19 @@ class WC_Gateway_Finpay_Notif_Handler
      * $is_payment_failed, $is_payment_pending, $is_payment_refund.
      * So the if-else branch only need to check from those var, instead of directly checking the condition.
      */
-    if ( $Finpay_notification->transaction_status == 'settlement'
-      || ($Finpay_notification->transaction_status == 'capture' && $Finpay_notification->fraud_status == 'accept') ) {
+    if ( $finpay_notification->transaction_status == 'settlement'
+      || ($finpay_notification->transaction_status == 'capture' && $finpay_notification->fraud_status == 'accept') ) {
       // success scenario of payment paid
 
       // Procces subscription transaction if contains subsctription for card transaction
-      if( $Finpay_notification->transaction_status == 'capture' && class_exists( 'WC_Subscriptions' ) ){
-        $this->checkAndHandleWCSubscriptionTxnNotif( $Finpay_notification, $order );
+      if( $finpay_notification->transaction_status == 'capture' && class_exists( 'WC_Subscriptions' ) ){
+        $this->checkAndHandleWCSubscriptionTxnNotif( $finpay_notification, $order );
       }
-      $order->payment_complete($Finpay_notification->transaction_id);
-      $order->add_order_note(__('finpay payment completed: '.$Finpay_notification->transaction_status.'. finpay-'.$Finpay_notification->payment_type,'finpay-woocommerce'));
+      $order->payment_complete($finpay_notification->transaction_id);
+      $order->add_order_note(__('finpay payment completed: '.$finpay_notification->transaction_status.'. finpay-'.$finpay_notification->payment_type,'finpay-woocommerce'));
       // allow merchant-defined custom action function to perform action on $order
       do_action( 'Finpay_after_notification_payment_complete', 
-        $order, $Finpay_notification );
+        $order, $finpay_notification );
 
       // apply custom order status mapping coming from custom_payment_complete_status config value
       $plugin_options = $this->getPluginOptions($plugin_id);
@@ -276,23 +276,23 @@ class WC_Gateway_Finpay_Notif_Handler
         ){
         $order->update_status(
           $plugin_options['custom_payment_complete_status'],
-          __('Status auto-updated via custom status mapping config: finpay-'.$Finpay_notification->payment_type,'finpay-woocommerce')
+          __('Status auto-updated via custom status mapping config: finpay-'.$finpay_notification->payment_type,'finpay-woocommerce')
         );
       }
     }
-    else if ($Finpay_notification->transaction_status == 'capture' && $Finpay_notification->fraud_status == 'challenge') {
+    else if ($finpay_notification->transaction_status == 'capture' && $finpay_notification->fraud_status == 'challenge') {
       $order->update_status('on-hold',__('Challanged payment: finpay-'.$Finpay_notification->payment_type,'finpay-woocommerce'));
     }
-    else if ($Finpay_notification->transaction_status == 'cancel') {
-      $order->update_status('cancelled',__('Cancelled payment: finpay-'.$Finpay_notification->payment_type,'finpay-woocommerce'));
+    else if ($finpay_notification->transaction_status == 'cancel') {
+      $order->update_status('cancelled',__('Cancelled payment: finpay-'.$finpay_notification->payment_type,'finpay-woocommerce'));
     }
-    else if ($Finpay_notification->transaction_status == 'expire') {
-      if ($Finpay_notification->payment_type == 'credit_card'){
+    else if ($finpay_notification->transaction_status == 'expire') {
+      if ($finpay_notification->payment_type == 'credit_card'){
         // do nothing on card status expire (happen if 3DS abandoned), allow payment retries
         // @NOTE: but it may means card txn, will never notif-based cancel-order trigger to WC.
         // Fortunately WC seems to have auto cancel-order built in.
       } else {
-        $order->update_status('cancelled',__('Expired payment: finpay-'.$Finpay_notification->payment_type,'finpay-woocommerce'));
+        $order->update_status('cancelled',__('Expired payment: finpay-'.$finpay_notification->payment_type,'finpay-woocommerce'));
       }
     }
     else if ($Finpay_notification->transaction_status == 'deny') {
