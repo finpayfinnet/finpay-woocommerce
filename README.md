@@ -57,11 +57,11 @@ Payment Method Feature:
 	* Note: key for Sandbox & Production is different, make sure you use the correct one.
 	* Other configuration are optional, you may leave it as is.
 
-### Finpay Configuration
+<!-- ### Finpay Configuration
 
 1. Login to your [Finpay&nbsp; Account](https://dashboard.finpay.id), select your environment (sandbox/production), go to menu **settings > configuration**
   * Insert `http://[your web]/?wc-api=WC_Gateway_Finpay` as your Payment Notification URL.
-  * Insert `http://[your web]/?wc-api=WC_Gateway_Finpay` link as Finish/Unfinish/Error Redirect URL
+  * Insert `http://[your web]/?wc-api=WC_Gateway_Finpay` link as Finish/Unfinish/Error Redirect URL -->
 
 ### Additional Resource
 Note: This section is optional and only for advanced usage.
