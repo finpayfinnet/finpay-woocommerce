@@ -115,11 +115,11 @@ class WC_Finpay_API {
      * Fetch Finpay API Configuration from plugin id and set as self/private vars.
      * @return void
      */
-    public static function fetchAndSetFinpayApiConfig( $plugin_id="Finpay" ) {
-        if(strpos($plugin_id, 'Finpay_sub') !== false){
-          // for sub separated gateway buttons, use main gateway plugin id instead
-          $plugin_id = 'Finpay';
-        }
+    public static function fetchAndSetFinpayApiConfig( $plugin_id="finpay" ) {
+        // if(strpos($plugin_id, 'Finpay_sub') !== false){
+        //   // for sub separated gateway buttons, use main gateway plugin id instead
+        //   $plugin_id = 'finpay';
+        // }
 		self::fetchAndSetCurrentPluginOptions( $plugin_id );
         Finpay\Config::$isProduction = (self::get_environment() == 'production') ? true : false;
         Finpay\Config::$username = self::get_username();
@@ -128,11 +128,11 @@ class WC_Finpay_API {
 
         // setup custom HTTP client header as identifier ref:
         // https://github.com/omarxp/Finpay-Drupal8/blob/3d4e4b4af46e96c742667c7a2925cf70dfaa9e2a/src/PluginForm/FinpayOfflineInstallmentForm.php#L39-L42
-        try {
-            Finpay\Config::$curlOptions[CURLOPT_HTTPHEADER][] = 'x-Finpay-wc-plu-version: '.FINPAY_PLUGIN_VERSION;
-            Finpay\Config::$curlOptions[CURLOPT_HTTPHEADER][] = 'x-Finpay-wc-plu-wc-version: '.WC_VERSION;
-            Finpay\Config::$curlOptions[CURLOPT_HTTPHEADER][] = 'x-Finpay-wc-plu-php-version: '.phpversion();
-        } catch (Exception $e) { }
+        // try {
+        //     Finpay\Config::$curlOptions[CURLOPT_HTTPHEADER][] = 'x-Finpay-wc-plu-version: '.FINPAY_PLUGIN_VERSION;
+        //     Finpay\Config::$curlOptions[CURLOPT_HTTPHEADER][] = 'x-Finpay-wc-plu-wc-version: '.WC_VERSION;
+        //     Finpay\Config::$curlOptions[CURLOPT_HTTPHEADER][] = 'x-Finpay-wc-plu-php-version: '.phpversion();
+        // } catch (Exception $e) { }
     }
 
     /**
@@ -165,6 +165,12 @@ class WC_Finpay_API {
     //     }
     //     return $response;
     // }
+
+    public static function doPayment($order, $params, $plugin_id='finpay'){
+        self::fetchAndSetFinpayApiConfig( $plugin_id );
+		self::setLogRequest( print_r( $params, true ), $plugin_id );
+        return Midtrans\Snap::createTransaction( $params );
+    }
 
     /**
      * Create Recurring Transaction for Subscription Payment.

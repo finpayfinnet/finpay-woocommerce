@@ -17,9 +17,9 @@ class ApiRequestor
      * @param string  $server_key
      * @param mixed[] $data_hash
      */
-    public static function get($url, $server_key, $data_hash)
+    public static function get($url, $username, $password, $data)
     {
-        return self::remoteCall($url, $server_key, $data_hash, false);
+        return self::remoteCall($url, $username, $password, $data, false);
     }
 
     /**
@@ -29,9 +29,9 @@ class ApiRequestor
      * @param string  $server_key
      * @param mixed[] $data_hash
      */
-    public static function post($url, $server_key, $data_hash)
+    public static function post($url, $username, $password, $data)
     {
-        return self::remoteCall($url, $server_key, $data_hash, true);
+        return self::remoteCall($url, $username, $password, $data, true);
     }
 
     /**

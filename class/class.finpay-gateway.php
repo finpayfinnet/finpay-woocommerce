@@ -90,8 +90,8 @@
         // Make this payment method enabled-checkbox 'yes' by default
         $this->form_fields['enabled']['default'] = 'yes';
         // Set icons config field specific placeholder
-        $this->form_fields['sub_payment_method_image_file_names_str']['placeholder'] = 'Finpay.png,credit_card.png';
-        $this->form_fields['sub_payment_method_image_file_names_str']['default'] = 'Finpay.png';
+        // $this->form_fields['sub_payment_method_image_file_names_str']['placeholder'] = 'Finpay.png,credit_card.png';
+        // $this->form_fields['sub_payment_method_image_file_names_str']['default'] = 'Finpay.png';
         // var_dump($this -> form_fields);exit();
       }
 
@@ -122,38 +122,43 @@
         // Get data for charge to Finpay API
         $params = $this->getPaymentRequestData( $order_id );
         // Add acquiring bank params
-        if (strlen($this->get_option('acquring_bank')) > 0)
-          $params['credit_card']['bank'] = strtoupper ($this->get_option('acquring_bank'));
+        // if (strlen($this->get_option('acquring_bank')) > 0)
+        //   $params['credit_card']['bank'] = strtoupper ($this->get_option('acquring_bank'));
 
         // if coming from sub separated gateway buttons
-        if($options && $options['sub_payment_method_params']){
-          $params['enabled_payments'] = $options['sub_payment_method_params'];
-        }
+        // if($options && $options['sub_payment_method_params']){
+        //   $params['enabled_payments'] = $options['sub_payment_method_params'];
+        // }
         // @TODO: add order thank you page as snap finish url
 
         // Empty the cart because payment is initiated.
         $woocommerce->cart->empty_cart();
         // allow merchant-defined custom filter function to modify snap $params
-        $params = apply_filters( 'Finpay_snap_params_main_before_charge', $params );
-        var_dump($params);exit();
+        // $params = apply_filters( 'Finpay_snap_params_main_before_charge', $params );
+        // var_dump($params);exit();
+        $response = array();
         try {
-          $snapResponse = WC_Finpay_API::createSnapTransactionHandleDuplicate( $order, $params, $this->id );
+          $response = WC_Finpay_API::doPayment( $order, $params, $this->id );
         } catch (Exception $e) {
             $this->setLogError( $e->getMessage() );
             WC_Finpay_Utils::json_print_exception( $e, $this );
           exit();
         }
+        // var_dump($response);exit();
 
         // If `enable_redirect` admin config used, snap redirect
-        if(property_exists($this,'enable_redirect') && $this->enable_redirect == 'yes'){
-          $redirectUrl = $snapResponse->redirect_url;
-        }else{
-          $redirectUrl = $order->get_checkout_payment_url( true )."&snap_token=".$snapResponse->token;
-        }
+        // if(property_exists($this,'enable_redirect') && $this->enable_redirect == 'yes'){
+        //   $redirectUrl = $response->redirect_url;
+        // }else{
+        //   $redirectUrl = $order->get_checkout_payment_url( true )."&snap_token=".$snapResponse->token;
+        // }
+
+        if($response -> responseCode == '200')
+          $redirectUrl = $response -> redirectUrl;
 
         // Store snap token & snap redirect url to $order metadata
-        $order->update_meta_data('_mt_payment_snap_token',$snapResponse->token);
-        $order->update_meta_data('_mt_payment_url',$snapResponse->redirect_url);
+        // $order->update_meta_data('_mt_payment_snap_token',$snapResponse->token);
+        // $order->update_meta_data('_mt_payment_url',$snapResponse->redirect_url);
         $order->save();
 
         // set wc order's finish_url on user's session cookie
