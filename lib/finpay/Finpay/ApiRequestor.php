@@ -42,7 +42,7 @@ class ApiRequestor
      * @param mixed[] $data_hash
      * @param bool    $post
      */
-    public static function remoteCall($url, $server_key, $data_hash, $post = true)
+    public static function remoteCall($url, $username, $password, $data, $post = true)
     {
         $ch = curl_init();
 
@@ -51,7 +51,7 @@ class ApiRequestor
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'Accept: application/json',
-                'Authorization: Basic ' . base64_encode($server_key . ':')
+                'Authorization: Basic ' . base64_encode($username . ':'.$password)
             ),
             CURLOPT_RETURNTRANSFER => 1
         );
@@ -72,8 +72,8 @@ class ApiRequestor
         if ($post) {
             $curl_options[CURLOPT_POST] = 1;
 
-            if ($data_hash) {
-                $body = json_encode($data_hash);
+            if ($data) {
+                $body = json_encode($data);
                 $curl_options[CURLOPT_POSTFIELDS] = $body;
             } else {
                 $curl_options[CURLOPT_POSTFIELDS] = '';
@@ -82,13 +82,15 @@ class ApiRequestor
 
         curl_setopt_array($ch, $curl_options);
 
-        // For testing purpose
-        if ($stubHttp) {
-            $result = self::processStubed($curl_options, $url, $server_key, $data_hash, $post);
-        } else {
-            $result = curl_exec($ch);
-            // curl_close($ch);
-        }
+        // // For testing purpose
+        // if ($stubHttp) {
+        //     $result = self::processStubed($curl_options, $url, $server_key, $data_hash, $post);
+        // } else {
+           
+        //     // curl_close($ch);
+        // }
+
+        $result = curl_exec($ch);
 
 
         if ($result === false) {
@@ -115,16 +117,16 @@ class ApiRequestor
         }
     }
 
-    private static function processStubed($curl, $url, $server_key, $data_hash, $post)
-    {
-        $lastHttpRequest = array(
-            "url" => $url,
-            "server_key" => $server_key,
-            "data_hash" => $data_hash,
-            "post" => $post,
-            "curl" => $curl
-        );
+    // private static function processStubed($curl, $url, $server_key, $data_hash, $post)
+    // {
+    //     $lastHttpRequest = array(
+    //         "url" => $url,
+    //         "server_key" => $server_key,
+    //         "data_hash" => $data_hash,
+    //         "post" => $post,
+    //         "curl" => $curl
+    //     );
 
-        return $stubHttpResponse;
-    }
+    //     return $stubHttpResponse;
+    // }
 }

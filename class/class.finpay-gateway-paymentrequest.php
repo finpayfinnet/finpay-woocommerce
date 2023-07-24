@@ -39,9 +39,9 @@
         parent::init_form_fields();
         WC_Finpay_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
           'acquring_bank' => array(
-            'title' => __( 'Acquiring Bank', 'Finpay-woocommerce'),
+            'title' => __( 'Acquiring Bank', 'finpay-woocommerce'),
             'type' => 'text',
-            'label' => __( 'Acquiring Bank', 'Finpay-woocommerce' ),
+            'label' => __( 'Acquiring Bank', 'finpay-woocommerce' ),
             'description' => __( 'You should leave it empty, it will be auto configured. </br> Alternatively may specify your card-payment acquiring bank for this payment option. </br> Options: BCA, BRI, DANAMON, MAYBANK, BNI, MANDIRI, CIMB, etc (Only choose 1 bank).' , 'Finpay-woocommerce' ),
             'default' => ''
           ),

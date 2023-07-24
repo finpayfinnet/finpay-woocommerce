@@ -78,15 +78,15 @@
         parent::init_form_fields();
         // Specific config fields for this main gateway goes below
         // var_dump('nyampe sini');exit();
-        WC_Finpay_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
-          'acquring_bank' => array(
-            'title' => __( 'Acquiring Bank', 'Finpay-woocommerce'),
-            'type' => 'text',
-            'label' => __( 'Acquiring Bank', 'Finpay-woocommerce' ),
-            'description' => __( 'You should leave it empty, it will be auto configured. </br> Alternatively may specify your card-payment acquiring bank for this payment option. </br> Options: BCA, BRI, DANAMON, MAYBANK, BNI, MANDIRI, CIMB, etc (Only choose 1 bank).' , 'Finpay-woocommerce' ),
-            'default' => ''
-          )
-        ));
+        // WC_Finpay_Utils::array_insert( $this->form_fields, 'enable_3d_secure', array(
+        //   'acquring_bank' => array(
+        //     'title' => __( 'Acquiring Bank', 'Finpay-woocommerce'),
+        //     'type' => 'text',
+        //     'label' => __( 'Acquiring Bank', 'Finpay-woocommerce' ),
+        //     'description' => __( 'You should leave it empty, it will be auto configured. </br> Alternatively may specify your card-payment acquiring bank for this payment option. </br> Options: BCA, BRI, DANAMON, MAYBANK, BNI, MANDIRI, CIMB, etc (Only choose 1 bank).' , 'Finpay-woocommerce' ),
+        //     'default' => ''
+        //   )
+        // ));
         // Make this payment method enabled-checkbox 'yes' by default
         $this->form_fields['enabled']['default'] = 'yes';
         // Set icons config field specific placeholder
@@ -135,6 +135,7 @@
         $woocommerce->cart->empty_cart();
         // allow merchant-defined custom filter function to modify snap $params
         $params = apply_filters( 'Finpay_snap_params_main_before_charge', $params );
+        var_dump($params);exit();
         try {
           $snapResponse = WC_Finpay_API::createSnapTransactionHandleDuplicate( $order, $params, $this->id );
         } catch (Exception $e) {
