@@ -28,12 +28,6 @@ class Config
      */
     public static $isProduction = false;
     /**
-     * Set it true to enable 3D Secure by default
-     * 
-     * @static
-     */
-    public static $is3ds = false;
-    /**
      * Enable request params sanitizer (validate and modify charge request params).
      * See Finpay_Sanitizer for more details
      * 

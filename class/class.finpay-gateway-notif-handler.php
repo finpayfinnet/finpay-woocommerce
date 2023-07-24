@@ -128,16 +128,16 @@ class WC_Gateway_Finpay_Notif_Handler
         $plugin_id = 'finpay';
       }
       // Verify finpay notification
-      $Finpay_notification = WC_Finpay_API::getStatusFromfinpayNotif( $plugin_id );
+      $finpay_notification = WC_Finpay_API::getStatusFromfinpayNotif( $plugin_id );
       // If notification verified, handle it
-      if (in_array($Finpay_notification->status_code, array(200, 201, 202, 407))) {
+      if (in_array($finpay_notification->status_code, array(200, 201, 202, 407))) {
         // @TAG: order-id-suffix-handling
         $order_id = 
-          WC_Finpay_Utils::check_and_restore_original_order_id($Finpay_notification->order_id);
+          WC_Finpay_Utils::check_and_restore_original_order_id($finpay_notification->order_id);
         // @TODO: relocate this check into the function itself, to prevent unnecessary double DB query load
         if (wc_get_order($order_id) != false) {
           // @TODO: rename this hook to use snake_case format
-          do_action( "finpay-handle-valid-notification", $Finpay_notification, $plugin_id );
+          do_action( "finpay-handle-valid-notification", $finpay_notification, $plugin_id );
         }
       }
       exit;
@@ -210,14 +210,14 @@ class WC_Gateway_Finpay_Notif_Handler
         // @TODO: fix this bug, $sanitized['id'] is transaction_id, which is unknown to WC
         // But actually, BCA Klikpay already handled on finish-url-page.php, evaluate if this still needed
         $plugin_id = wc_get_order( $sanitized['id'] )->get_payment_method();
-        $Finpay_notification = WC_Finpay_API::getfinpayStatus($id, $plugin_id);
+        $finpay_notification = WC_Finpay_API::getfinpayStatus($id, $plugin_id);
 
         // @TODO remove this order_id? seems unused
         // @TAG: order-id-suffix-handling
         $order_id = 
           WC_Finpay_Utils::check_and_restore_original_order_id($Finpay_notification->order_id);
         // if async payment paid
-        if ($Finpay_notification->transaction_status == 'settlement'){
+        if ($finpay_notification->transaction_status == 'settlement'){
           $this->checkAndRedirectUserToFinishUrl();
         } 
         // if async payment not paid

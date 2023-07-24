@@ -152,9 +152,12 @@
         // }else{
         //   $redirectUrl = $order->get_checkout_payment_url( true )."&snap_token=".$snapResponse->token;
         // }
-
-        if($response -> responseCode == '200')
-          $redirectUrl = $response -> redirectUrl;
+        $redirectUrl = null;
+        // $redirectUrl = "https://devo.finpay.id/pg/payment/card/access/7ce6638ce1d81e2f7b2ad631b3442c80dcbc9b2139f718cc6110c04691f77589";
+        // var_dump($response);exit();
+        if($response -> responseCode == '2000000')
+          $redirectUrl = $response -> redirecturl;
+        // var_dump($response);exit();
 
         // Store snap token & snap redirect url to $order metadata
         // $order->update_meta_data('_mt_payment_snap_token',$snapResponse->token);

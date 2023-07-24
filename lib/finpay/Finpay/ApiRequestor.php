@@ -46,6 +46,7 @@ class ApiRequestor
     {
         $ch = curl_init();
 
+        // var_dump(Config::$username);exit();
         $curl_options = array(
             CURLOPT_URL => $url,
             CURLOPT_HTTPHEADER => array(
@@ -57,17 +58,17 @@ class ApiRequestor
         );
 
         // merging with Config::$curlOptions
-        if (count(Config::$curlOptions)) {
-            // We need to combine headers manually, because it's array and it will no be merged
-            if (Config::$curlOptions[CURLOPT_HTTPHEADER]) {
-                $mergedHeders = array_merge($curl_options[CURLOPT_HTTPHEADER], Config::$curlOptions[CURLOPT_HTTPHEADER]);
-                $headerOptions = array( CURLOPT_HTTPHEADER => $mergedHeders );
-            } else {
-                $mergedHeders = array();
-            }
+        // if (count(Config::$curlOptions)) {
+        //     // We need to combine headers manually, because it's array and it will no be merged
+        //     if (Config::$curlOptions[CURLOPT_HTTPHEADER]) {
+        //         $mergedHeders = array_merge($curl_options[CURLOPT_HTTPHEADER], Config::$curlOptions[CURLOPT_HTTPHEADER]);
+        //         $headerOptions = array( CURLOPT_HTTPHEADER => $mergedHeders );
+        //     } else {
+        //         $mergedHeders = array();
+        //     }
 
-            $curl_options = array_replace_recursive($curl_options, Config::$curlOptions, $headerOptions);
-        }
+        //     $curl_options = array_replace_recursive($curl_options, Config::$curlOptions, $headerOptions);
+        // }
 
         if ($post) {
             $curl_options[CURLOPT_POST] = 1;
@@ -101,19 +102,20 @@ class ApiRequestor
             } catch (\Exception $e) {
                 throw new \Exception("API Request Error unable to json_decode API response: ".$result . ' | Request url: '.$url);
             }
-            if (!in_array($result_array->status_code, array(200, 201, 202, 407))) {
-                $message = 'Finpay Error (' . $result_array->status_code . '): '
-                . $result_array->status_message;
-                if (isset($result_array->validation_messages)) {
-                    $message .= '. Validation Messages (' . implode(", ", $result_array->validation_messages) . ')';
-                }
-                if (isset($result_array->error_messages)) {
-                    $message .= '. Error Messages (' . implode(", ", $result_array->error_messages) . ')';
-                }
-                throw new \Exception($message, $result_array->status_code);
-            } else {
-                return $result_array;
-            }
+            // if (!in_array($result_array->status_code, array(200, 201, 202, 407))) {
+            //     $message = 'Finpay Error (' . $result_array->status_code . '): '
+            //     . $result_array->status_message;
+            //     if (isset($result_array->validation_messages)) {
+            //         $message .= '. Validation Messages (' . implode(", ", $result_array->validation_messages) . ')';
+            //     }
+            //     if (isset($result_array->error_messages)) {
+            //         $message .= '. Error Messages (' . implode(", ", $result_array->error_messages) . ')';
+            //     }
+            //     throw new \Exception($message, $result_array->status_code);
+            // } else {
+            //     return $result_array;
+            // }
+            return $result_array;
         }
     }
 

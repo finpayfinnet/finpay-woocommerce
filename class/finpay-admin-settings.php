@@ -43,14 +43,14 @@ return apply_filters(
             'class'         => 'sandbox_settings toggle-finpay'
         ),
         
-        'client_key_v2_production'    => array(
+        'username_production'    => array(
             'title'         => __("Username - Production", 'finpay-woocommerce'),
             'type'          => 'text',
             'description'   => sprintf(__('Input your <b>Production</b> username. Get the key <a href="%s" target="_blank">here</a>', 'finpay-woocommerce'), $production_key_url),
             'default'       => '',
             'class'         => 'production_settings toggle-finpay',
         ),
-        'server_key_v2_production'     => array(
+        'password_production'     => array(
             'title'         => __("Password - Production", 'finpay-woocommerce'),
             'type'          => 'password',
             'description'   => sprintf(__('Input your <b>Production</b> password. Get the key <a href="%s" target="_blank">here</a>', 'finpay-woocommerce'), $production_key_url),

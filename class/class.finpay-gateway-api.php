@@ -67,6 +67,7 @@ class WC_Finpay_API {
 	 */
 	public static function fetchAndSetCurrentPluginOptions ( $plugin_id="finpay" ) {
 		self::$plugin_options = get_option( 'woocommerce_' . $plugin_id . '_settings' );
+        // var_dump(self::$plugin_options);
 	}
 
 	/**
@@ -76,10 +77,12 @@ class WC_Finpay_API {
 	public static function get_username() {
 		if ( ! self::$username ) {
 			$plugin_options = self::$plugin_options;
-			if ( isset( $plugin_options['username_production'], $plugin_options['username_sandbox'] ) ) {
+            // var_dump($plugin_options);exit();
+			if ( isset( $plugin_options['username_production'], $plugin_options['password_sandbox'] ) ) {
 				self::set_username( self::get_environment() == 'production' ? $plugin_options['username_production'] : $plugin_options['username_sandbox'] );
 			}
 		}
+        // var_dump(self::$username);exit();
 		return self::$username;
 	}
 
@@ -91,10 +94,11 @@ class WC_Finpay_API {
     public static function get_password(){
         if( ! self::$password){
             $plugin_options = self::$plugin_options;
-            if( isset($plugin_options['password_productoin'], $plugin_options['password_sandbox'])) {
+            if( isset($plugin_options['password_production'], $plugin_options['password_sandbox'])) {
                 self::set_password( self::get_environment() == 'production' ? $plugin_options['password_production'] : $plugin_options['password_sandbox'] );
             }
         }
+        return self::$password;
     }
 
     /**
@@ -122,6 +126,8 @@ class WC_Finpay_API {
         // }
 		self::fetchAndSetCurrentPluginOptions( $plugin_id );
         Finpay\Config::$isProduction = (self::get_environment() == 'production') ? true : false;
+        // var_dump(self::get_username());exit();
+        // var_dump(self::get_environment());exit();
         Finpay\Config::$username = self::get_username();
         Finpay\Config::$password = self::get_password();     
         Finpay\Config::$isSanitized = true;
@@ -169,7 +175,8 @@ class WC_Finpay_API {
     public static function doPayment($order, $params, $plugin_id='finpay'){
         self::fetchAndSetFinpayApiConfig( $plugin_id );
 		self::setLogRequest( print_r( $params, true ), $plugin_id );
-        return Midtrans\Snap::createTransaction( $params );
+        // return Finpay\
+        return Finpay\Link::createTransaction($params);
     }
 
     /**

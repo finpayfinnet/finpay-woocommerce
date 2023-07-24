@@ -28,20 +28,19 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     // Get Settings
     $this->title              = $this->get_option( 'title' );
     $this->description        = $this->get_option( 'description' );
-    $this->sub_payment_method_image_file_names_str = $this->get_option( 'sub_payment_method_image_file_names_str' );
     $this->environment        = $this->get_option( 'select_finpay_environment' );
-    $this->client_key = ($this->environment == 'production') ? $this->get_option( 'client_key_production' ) : $this->get_option( 'client_key_sandbox' );
-    $this->server_key = ($this->environment == 'production') ? $this->get_option( 'server_key_production' ) : $this->get_option( 'server_key_sandbox' );
-    $this->enable_3d_secure   = $this->get_option( 'enable_3d_secure' );
-    $this->enable_savecard   = $this->get_option( 'enable_savecard' );
-    $this->enable_redirect   = $this->get_option( 'enable_redirect' );
-    $this->ignore_pending_status   = $this->get_option( 'ignore_pending_status' );
-    $this->custom_expiry   = $this->get_option( 'custom_expiry' );
-    $this->custom_fields   = $this->get_option( 'custom_fields' );
-    $this->enable_map_finish_url   = $this->get_option( 'enable_map_finish_url' );
-    $this->ganalytics_id   = $this->get_option( 'ganalytics_id' );
-    $this->enable_immediate_reduce_stock   = $this->get_option( 'enable_immediate_reduce_stock' );
-    $this->to_idr_rate = apply_filters( 'Finpay_to_idr_rate', $this->get_option( 'to_idr_rate' ));
+    $this->username = ($this->environment == 'production') ? $this->get_option( 'username_production' ) : $this->get_option( 'username_sandbox' );
+    $this->password = ($this->environment == 'production') ? $this->get_option( 'password_production' ) : $this->get_option( 'password_sandbox' );
+    // $this->enable_3d_secure   = $this->get_option( 'enable_3d_secure' );
+    // $this->enable_savecard   = $this->get_option( 'enable_savecard' );
+    // $this->enable_redirect   = $this->get_option( 'enable_redirect' );
+    // $this->ignore_pending_status   = $this->get_option( 'ignore_pending_status' );
+    // $this->custom_expiry   = $this->get_option( 'custom_expiry' );
+    // $this->custom_fields   = $this->get_option( 'custom_fields' );
+    // $this->enable_map_finish_url   = $this->get_option( 'enable_map_finish_url' );
+    // $this->ganalytics_id   = $this->get_option( 'ganalytics_id' );
+    // $this->enable_immediate_reduce_stock   = $this->get_option( 'enable_immediate_reduce_stock' );
+    // $this->to_idr_rate = apply_filters( 'Finpay_to_idr_rate', $this->get_option( 'to_idr_rate' ));
     $this->log = new WC_Logger();
     // var_dump('nyampe this log');exit();
 
@@ -140,9 +139,9 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     );
 
     try {
-      if(strpos($this->id, 'Finpay_sub') !== false){
+      if(strpos($this->id, 'finpay_sub') !== false){
         // for sub separated gateway buttons, use main gateway plugin id instead
-        $this->id = 'Finpay';
+        $this->id = 'finpay';
       }
       // @TODO: call refund API with transaction_id instead of order_id to avoid id not found for suffixed order_id. $order->get_transaction_id();
       $transaction_id = $order->get_transaction_id() 
@@ -179,7 +178,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
 
     $customer_details = array();
     $customer_details['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
-    $customer_details['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
+    // $customer_details['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
     $customer_details['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
     $customer_details['email'] = WC_Finpay_Utils::getOrderProperty($order,'billing_email');
     $customer_details['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
@@ -272,60 +271,77 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
       }
     }
 
+    $phone = $billing_address['phone'];
+    if(substr($phone, 0, 1) == "0"){
+      $phone = "+62".substr($phone, 1);
+    }
+
+    $params['customer']['email'] = $customer_details['email'];
+    $params['customer']['firstName'] = $customer_details['first_name'];
+    $params['customer']['lastName'] = $customer_details['last_name'];
+    $params['customer']['mobilePhone'] = $phone;
+
+    $params['order']['id'] = $order_id;
     // Iterate through the entire item to ensure that currency conversion is applied
+    
+    
     if (get_woocommerce_currency() != 'IDR'){
       foreach ($items as &$item) {
         $item['price'] = $item['price'] * $this->to_idr_rate;
         $item['price'] = intval($item['price']);
       }
       unset($item);
-      $params['transaction_details']['gross_amount'] *= $this->to_idr_rate;
+      $params['order']['amount'] *= $this->to_idr_rate;
     }
 
     $total_amount=0;
     // error_log('print r items[]' . print_r($items,true)); //debugan
     // Sum item details prices as gross_amount
     foreach ($items as $item) {
-      $total_amount+=($item['price']*$item['quantity']);
+      $total_amount+=($item['unitPrice']*$item['quantity']);
     }
-    $params['transaction_details']['gross_amount'] = $total_amount;
-    $params['item_details'] = $items;
-    $params['credit_card']['secure'] = ($this->enable_3d_secure == 'yes') ? true : false;
+    $params['order']['amount'] = $total_amount;
+    $params['order']['description'] = 'Buy';
+    $params['url']['callbackUrl'] = 'http://localhost:8000';
+    $params['url']['successUrl'] = 'http://localhost:8000';
+    // $params['transaction_details']['gross_amount'] = $total_amount;
+    // $params['item_details'] = $items;
+    // $params['credit_card']['secure'] = ($this->enable_3d_secure == 'yes') ? true : false;
 
     // add custom `expiry` API params
-    $custom_expiry_params = explode(" ",$this->custom_expiry);
-    if ( !empty($custom_expiry_params[1]) && !empty($custom_expiry_params[0]) ){
-      $time = time();
-      $time += 30; // add 30 seconds to allow margin of error
-      $params['expiry'] = array(
-        'start_time' => date("Y-m-d H:i:s O",$time), 
-        'unit' => $custom_expiry_params[1], 
-        'duration'  => (int)$custom_expiry_params[0],
-      );
-    }
-    // add custom_fields API params
-    $custom_fields_params = explode(",",$this->custom_fields);
-    if ( !empty($custom_fields_params[0]) ){
-      $params['custom_field1'] = $custom_fields_params[0];
-      $params['custom_field2'] = !empty($custom_fields_params[1]) ? $custom_fields_params[1] : null;
-      $params['custom_field3'] = !empty($custom_fields_params[2]) ? $custom_fields_params[2] : null;
-    }
-    // add savecard API params
-    if ($this->enable_savecard =='yes' && is_user_logged_in()){
-      $params['user_id'] = crypt( $customer_details['email'].$customer_details['phone'] , $this->server_key );
-      $params['credit_card']['save_card'] = true;
-    }
-    // add Snap API metadata, identifier for request coming via this plugin
-    try {
-      $params['metadata'] = array(
-        'x_Finpay_wc_plu' => array(
-          'version' => FINPAY_PLUGIN_VERSION,
-          'wc' => WC_VERSION,
-          'php' => phpversion()
-        )
-      );
-    } catch (Exception $e) { }
-
+    // $custom_expiry_params = explode(" ",$this->custom_expiry);
+    // if ( !empty($custom_expiry_params[1]) && !empty($custom_expiry_params[0]) ){
+    //   $time = time();
+    //   $time += 30; // add 30 seconds to allow margin of error
+    //   $params['expiry'] = array(
+    //     'start_time' => date("Y-m-d H:i:s O",$time), 
+    //     'unit' => $custom_expiry_params[1], 
+    //     'duration'  => (int)$custom_expiry_params[0],
+    //   );
+    // }
+    // // add custom_fields API params
+    // $custom_fields_params = explode(",",$this->custom_fields);
+    // if ( !empty($custom_fields_params[0]) ){
+    //   $params['custom_field1'] = $custom_fields_params[0];
+    //   $params['custom_field2'] = !empty($custom_fields_params[1]) ? $custom_fields_params[1] : null;
+    //   $params['custom_field3'] = !empty($custom_fields_params[2]) ? $custom_fields_params[2] : null;
+    // }
+    // // add savecard API params
+    // if ($this->enable_savecard =='yes' && is_user_logged_in()){
+    //   $params['user_id'] = crypt( $customer_details['email'].$customer_details['phone'] , $this->server_key );
+    //   $params['credit_card']['save_card'] = true;
+    // }
+    // // add Snap API metadata, identifier for request coming via this plugin
+    // try {
+    //   $params['metadata'] = array(
+    //     'x_Finpay_wc_plu' => array(
+    //       'version' => FINPAY_PLUGIN_VERSION,
+    //       'wc' => WC_VERSION,
+    //       'php' => phpversion()
+    //     )
+    //   );
+    // } catch (Exception $e) { }
+    // echo json_encode($params);exit();
     return $params;
   }
 

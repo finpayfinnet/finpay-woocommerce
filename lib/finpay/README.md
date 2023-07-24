@@ -1,15 +1,15 @@
-Midtrans-PHP
+finpay-PHP
 ===============
 
-[![PHP version](https://badge.fury.io/ph/midtrans%2Fmidtrans-php.svg)](https://badge.fury.io/ph/midtrans%2Fmidtrans-php)
-[![Latest Stable Version](https://poser.pugx.org/midtrans/midtrans-php/v/stable)](https://packagist.org/packages/midtrans/midtrans-php)
-[![Monthly Downloads](https://poser.pugx.org/midtrans/midtrans-php/d/monthly)](https://packagist.org/packages/midtrans/midtrans-php)
-[![Total Downloads](https://poser.pugx.org/midtrans/midtrans-php/downloads)](https://packagist.org/packages/midtrans/midtrans-php)
-<!-- [![Build Status](https://travis-ci.org/midtrans/midtrans-php.svg)](https://travis-ci.org/midtrans/midtrans-php) -->
+[![PHP version](https://badge.fury.io/ph/finpay%2Ffinpay-php.svg)](https://badge.fury.io/ph/finpay%2Ffinpay-php)
+[![Latest Stable Version](https://poser.pugx.org/finpay/finpay-php/v/stable)](https://packagist.org/packages/finpay/finpay-php)
+[![Monthly Downloads](https://poser.pugx.org/finpay/finpay-php/d/monthly)](https://packagist.org/packages/finpay/finpay-php)
+[![Total Downloads](https://poser.pugx.org/finpay/finpay-php/downloads)](https://packagist.org/packages/finpay/finpay-php)
+<!-- [![Build Status](https://travis-ci.org/finpay/finpay-php.svg)](https://travis-ci.org/finpay/finpay-php) -->
 
-[Midtrans](https://midtrans.com) :heart: PHP!
+[finpay](https://finpay.id) :heart: PHP!
 
-This is the Official PHP wrapper/library for Midtrans Payment API, that is compatible with Composer. Visit [https://midtrans.com](https://midtrans.com) for more information about the product and see documentation at [http://docs.midtrans.com](https://docs.midtrans.com) for more technical details.
+This is the Official PHP wrapper/library for finpay Payment API, that is compatible with Composer. Visit [https://finpay.id](https://finpay.id) for more information about the product and see documentation at [http://docs.finpay.id](https://docs.finpay.id) for more technical details.
 
 ## 1. Installation
 
@@ -18,7 +18,7 @@ This is the Official PHP wrapper/library for Midtrans Payment API, that is compa
 If you are using [Composer](https://getcomposer.org), you can install via composer CLI:
 
 ```
-composer require midtrans/midtrans-php
+composer require finpay/finpay-php
 ```
 
 **or**
@@ -28,7 +28,7 @@ add this require line to your `composer.json` file:
 ```json
 {
     "require": {
-        "midtrans/midtrans-php": "2.*"
+        "finpay/finpay-php": "2.*"
     }
 }
 ```
@@ -37,35 +37,37 @@ and run `composer install` on your terminal.
 
 ### 1.b Manual Instalation
 
-If you are not using Composer, you can clone or [download](https://github.com/midtrans/midtrans-php/archive/master.zip) this repository. And try to require/autoload `Midtrans.php`.
+If you are not using Composer, you can clone or [download](https://github.com/finpay/finpay-php/archive/master.zip) this repository. And try to require/autoload `Finpay.php`.
 
 ## 2. How to Use
 
-If you are not using php framework, you must include `Midtrans.php` file on your code.
+If you are not using php framework, you must include `Finpay.php` file on your code.
 
 ```php
-require_once dirname(__FILE__) . '/pathofproject/Midtrans.php';
+require_once dirname(__FILE__) . '/pathofproject/Finpay.php';
 ```
 
 ### 2.1 General Settings
 
 ```php
-// Set your Merchant Server Key
-\Midtrans\Config::$serverKey = '<your server key>';
+// Set your Merchant's Username
+\Finpay\Config::$username = '<your merchant\'s username >';
+// Set your Merchant's Password
+\Finpay\Config::$password = '<your merchant\'s password >';
 // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-\Midtrans\Config::$isProduction = false;
+\Finpay\Config::$isProduction = false;
 // Set sanitization on (default)
-\Midtrans\Config::$isSanitized = true;
+\Finpay\Config::$isSanitized = true;
 // Set 3DS transaction for credit card to true
-\Midtrans\Config::$is3ds = true;
+\Finpay\Config::$is3ds = true;
 ```
 
 ### 2.2 Choose Product/Method
 
-We have [3 different products](https://docs.midtrans.com/en/welcome/index.html) of payment that you can use:
-- [Snap](#22a-snap) - Customizable payment popup will appear on **your web/app** (no redirection). [doc ref](https://snap-docs.midtrans.com/)
-- [Snap Redirect](#22b-snap-redirect) - Customer need to be redirected to payment url **hosted by midtrans**. [doc ref](https://snap-docs.midtrans.com/)
-- [Core API (VT-Direct)](#22c-core-api-vt-direct) - Basic backend implementation, you can customize the frontend embedded on **your web/app** as you like (no redirection). [doc ref](https://api-docs.midtrans.com/)
+We have [3 different products](https://docs.finpay.id/en/welcome/index.html) of payment that you can use:
+- [Snap](#22a-snap) - Customizable payment popup will appear on **your web/app** (no redirection). [doc ref](https://snap-docs.finpay.id/)
+- [Snap Redirect](#22b-snap-redirect) - Customer need to be redirected to payment url **hosted by finpay**. [doc ref](https://snap-docs.finpay.id/)
+- [Core API (VT-Direct)](#22c-core-api-vt-direct) - Basic backend implementation, you can customize the frontend embedded on **your web/app** as you like (no redirection). [doc ref](https://api-docs.finpay.id/)
 
 Choose one that you think best for your unique needs.
 
@@ -83,7 +85,7 @@ $params = array(
     )
 );
 
-$snapToken = \Midtrans\Snap::getSnapToken($params);
+$snapToken = \Finpay\Snap::getSnapToken($params);
 ```
 
 #### Initialize Snap JS when customer click pay button
@@ -95,7 +97,7 @@ $snapToken = \Midtrans\Snap::getSnapToken($params);
     <pre><div id="result-json">JSON result will appear here after payment:<br></div></pre> 
 
 <!-- TODO: Remove ".sandbox" from script src URL for production environment. Also input your client key in "data-client-key" -->
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<Set your ClientKey here>"></script>
+    <script src="https://app.sandbox.finpay.id/snap/snap.js" data-client-key="<Set your ClientKey here>"></script>
     <script type="text/javascript">
       document.getElementById('pay-button').onclick = function(){
         // SnapToken acquired from previous step
@@ -138,7 +140,7 @@ $params = array(
 
 try {
   // Get Snap Payment Page URL
-  $paymentUrl = \Midtrans\Snap::createTransaction($params)->redirect_url;
+  $paymentUrl = \Finpay\Snap::createTransaction($params)->redirect_url;
   
   // Redirect to Snap Payment Page
   header('Location: ' . $paymentUrl);
@@ -157,7 +159,7 @@ You can see some Core API examples [here](examples/core-api).
 #### Set Client Key
 
 ```javascript
-MidtransNew3ds.clientKey = "<your client key>";
+finpayNew3ds.clientKey = "<your client key>";
 ```
 
 #### Checkout Page
@@ -254,13 +256,13 @@ $transaction_data = array(
 ##### 5. Charge
 
 ```php
-$response = \Midtrans\CoreApi::charge($transaction_data);
+$response = \Finpay\CoreApi::charge($transaction_data);
 ```
 
 
 ##### 6. Credit Card 3DS Authentication
 
-The credit card charge result may contains `redirect_url` for 3DS authentication. 3DS Authentication should be handled on Frontend please refer to [API docs](https://api-docs.midtrans.com/#card-features-3d-secure)
+The credit card charge result may contains `redirect_url` for 3DS authentication. 3DS Authentication should be handled on Frontend please refer to [API docs](https://api-docs.finpay.id/#card-features-3d-secure)
 
 For full example on Credit Card 3DS transaction refer to:
 - [Core API examples](/examples/core-api/)
@@ -323,7 +325,7 @@ HTTP notification will be sent whenever transaction status is changed.
 Example also available [here](examples/notification-handler.php)
 
 ```php
-$notif = new \Midtrans\Notification();
+$notif = new \Finpay\Notification();
 
 $transaction = $notif->transaction_status;
 $fraud = $notif->fraud_status;
@@ -356,29 +358,29 @@ else if ($transaction == 'deny') {
 #### Get Transaction Status
 
 ```php
-$status = \Midtrans\Transaction::status($orderId);
+$status = \Finpay\Transaction::status($orderId);
 var_dump($status);
 ```
 
 #### Approve Transaction
-If transaction fraud_status == [CHALLENGE](https://support.midtrans.com/hc/en-us/articles/202710750-What-does-CHALLENGE-status-mean-What-should-I-do-if-there-is-a-CHALLENGE-transaction-), you can approve the transaction from Merchant Dashboard, or API :
+If transaction fraud_status == [CHALLENGE](https://support.finpay.id/hc/en-us/articles/202710750-What-does-CHALLENGE-status-mean-What-should-I-do-if-there-is-a-CHALLENGE-transaction-), you can approve the transaction from Merchant Dashboard, or API :
 
 ```php
-$approve = \Midtrans\Transaction::approve($orderId);
+$approve = \Finpay\Transaction::approve($orderId);
 var_dump($approve);
 ```
 
 #### Cancel Transaction
 You can Cancel transaction with `fraud_status == CHALLENGE`, or credit card transaction with `transaction_status == CAPTURE` (before it become SETTLEMENT)
 ```php
-$cancel = \Midtrans\Transaction::cancel($orderId);
+$cancel = \Finpay\Transaction::cancel($orderId);
 var_dump($cancel);
 ```
 
 #### Expire Transaction
 You can Expire transaction with `transaction_status == PENDING` (before it become SETTLEMENT or EXPIRE)
 ```php
-$cancel = \Midtrans\Transaction::cancel($orderId);
+$cancel = \Finpay\Transaction::cancel($orderId);
 var_dump($cancel);
 ```
 
@@ -391,7 +393,7 @@ $params = array(
     'amount' => 10000,
     'reason' => 'Item out of stock'
 );
-$refund = \Midtrans\Transaction::refund($orderId, $params);
+$refund = \Finpay\Transaction::refund($orderId, $params);
 var_dump($refund);
 ```
 
@@ -404,7 +406,7 @@ $params = array(
     'amount' => 10000,
     'reason' => 'Item out of stock'
 );
-$direct_refund = \Midtrans\Transaction::refundDirect($orderId, $params);
+$direct_refund = \Finpay\Transaction::refundDirect($orderId, $params);
 var_dump($direct_refund);
 ```
 
@@ -424,6 +426,6 @@ Please change server key and client key on `phpunit.xml` to your own.
 
 There are several guides that must be taken care of when you develop new plugins.
 
-1. __Handling currency other than IDR.__ Midtrans `v1` and `v2` currently accepts payments in Indonesian Rupiah only. As a corrolary, there is a validation on the server to check whether the item prices are in integer or not. As much as you are tempted to round-off the price, DO NOT do that! Always prepare when your system uses currencies other than IDR, convert them to IDR accordingly, and only round the price AFTER that.
+1. __Handling currency other than IDR.__ finpay `v1` and `v2` currently accepts payments in Indonesian Rupiah only. As a corrolary, there is a validation on the server to check whether the item prices are in integer or not. As much as you are tempted to round-off the price, DO NOT do that! Always prepare when your system uses currencies other than IDR, convert them to IDR accordingly, and only round the price AFTER that.
 
 2. Consider using the __auto-sanitization__ feature.
