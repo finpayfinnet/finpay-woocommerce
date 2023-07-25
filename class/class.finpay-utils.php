@@ -138,7 +138,7 @@ class WC_Finpay_Utils
    * @return string the non duplicate order_id added with suffix
    */
   public static function generate_non_duplicate_order_id($order_id){
-    $suffix_separator = '-wc-mdtrs-';
+    $suffix_separator = '-wc-fnpy-';
     $date = new DateTime();
     $unix_timestamp = $date->getTimestamp();
 
@@ -155,7 +155,7 @@ class WC_Finpay_Utils
    * @return string the original WC order_id
    */
   public static function check_and_restore_original_order_id($non_duplicate_order_id){
-    $suffix_separator = '-wc-mdtrs-';
+    $suffix_separator = '-wc-fnpy-';
     $original_order_id = $non_duplicate_order_id;
     if(strpos($non_duplicate_order_id, $suffix_separator) !== false){
       $splitted_order_id_strings = explode($suffix_separator, $non_duplicate_order_id);

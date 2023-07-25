@@ -137,13 +137,13 @@ If you are a developer or know how to customize Wordpress, this section may be u
 This plugin have few available [WP hooks](https://developer.wordpress.org/plugins/hooks/):
 - filter: `Finpay_snap_params_main_before_charge` (1 params)
 	- For if you want to modify Snap API JSON param on the main gateway, before transaction is created on Finpay side. The $params is PHP Array representation of [Snap API JSON param](https://snap-docs.Finpay.com/#request-body-json-parameter)
-- action: `Finpay_after_notification_payment_complete` (2 params)
+- action: `finpay_after_notification_payment_complete` (2 params)
 	- For if you want to perform action/update WC Order object when the payment is declared as complete upon Finpay notification received.
-- action: `Finpay_on_notification_received` (2 params)
+- action: `finpay_on_notification_received` (2 params)
 	- For if you want to perform action/update WC Order object upon Finpay notification received.
-- filter: `Finpay_gateway_icon_before_render` (1 params)
+- filter: `finpay_gateway_icon_before_render` (1 params)
 	- For if you want to modify payment icons HTML image tag.
-- action: `Finpay-handle-valid-notification` (1 params)
+- action: `finpay-handle-valid-notification` (1 params)
 	- For if you want to perform something upon valid Finpay notification received. Note: this is legacy hook, better use the hook above.
 
 Example implementation:
@@ -165,7 +165,7 @@ function my_Finpay_snap_param_hook( $params ) {
 }
 
 // Custom action hook to modify WC Order object after payment marked as complete
-add_action( 'Finpay_after_notification_payment_complete', 'my_Finpay_complete_hook',$priority = 10, $accepted_args = 2 );
+add_action( 'midtrans_on_notification_received', 'my_Finpay_complete_hook',$priority = 10, $accepted_args = 2 );
 function my_Finpay_complete_hook( $order, $Finpay_notification ) {
 	// example: update order status to directly `completed`, instead of default `processing`.
 	$order->update_status('completed',__('Completed payment via my custom hook: Finpay-'.$Finpay_notification->payment_type,'Finpay-woocommerce'));
@@ -187,7 +187,7 @@ function my_Finpay_gateway_icon_hook($image_tag){
 
 For reference on where/which file to apply that code example, [refer here](https://blog.nexcess.net/the-right-way-to-add-custom-functions-to-your-wordpress-site/).
 
-Note: for `Finpay_after_notification_payment_complete` & `Finpay_on_notification_received` hooks, if you are using [custom "WC Order Status on Payment Paid"](https://docs.Finpay.com/en/snap/with-plugins?id=advanced-customize-woocommerce-order-status-upon-payment-paid) config, the final WC Order status value can get overridden by that config. As that config is executed last.
+Note: for `finpay_after_notification_payment_complete` & `finpay_on_notification_received` hooks, if you are using [custom "WC Order Status on Payment Paid"](https://docs.Finpay.com/en/snap/with-plugins?id=advanced-customize-woocommerce-order-status-upon-payment-paid) config, the final WC Order status value can get overridden by that config. As that config is executed last.
 
 </details>
 

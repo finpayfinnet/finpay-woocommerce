@@ -287,8 +287,8 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     
     if (get_woocommerce_currency() != 'IDR'){
       foreach ($items as &$item) {
-        $item['price'] = $item['price'] * $this->to_idr_rate;
-        $item['price'] = intval($item['price']);
+        $item['unitPrice'] = $item['unitPrice'] * $this->to_idr_rate;
+        $item['unitPrice'] = intval($item['unitPrice']);
       }
       unset($item);
       $params['order']['amount'] *= $this->to_idr_rate;
@@ -301,6 +301,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
       $total_amount+=($item['unitPrice']*$item['quantity']);
     }
     $params['order']['amount'] = $total_amount;
+    $params['order']['items'] = $items;
     $params['order']['description'] = 'Buy';
     $params['url']['callbackUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay";
     $params['url']['successUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay";
