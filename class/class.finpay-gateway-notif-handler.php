@@ -35,10 +35,10 @@ class WC_Gateway_Finpay_Notif_Handler
   public function doEarlyAckResponse()
   {
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-      if($_GET['status'] == 'sukses'){
-        $this -> checkAndRedirectUserToFinishUrl();
+      if ($_GET['status'] == 'sukses') {
+        $this->checkAndRedirectUserToFinishUrl();
       } elseif ($_GET['status'] == 'gagal') {
-        $this -> checkAndRedirectUserToFinishUrl();
+        wp_redirect(get_permalink(wc_get_page_id('shop')));
       }
       die('This endpoint is for finpay notification URL (HTTP POST). This message will be shown if opened using browser (HTTP GET). You can copy this current URL on your browser address bar and paste it to: "finpay Dashboard > Settings > Configuration > Notification Url". This will allow your WooCommerce to receive finpay payment status, which will auto sync the payment status.');
       exit();

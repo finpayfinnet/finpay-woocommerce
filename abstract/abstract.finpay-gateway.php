@@ -305,7 +305,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     $params['order']['description'] = 'Buy';
     $params['url']['callbackUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay";
     $params['url']['successUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay&status=sukses";
-    $params['url']['backUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay&status=back";
+    $params['url']['backUrl'] = get_permalink( wc_get_page_id( 'shop' ) );
     $params['url']['failUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay&status=gagal";
     // $params['transaction_details']['gross_amount'] = $total_amount;
     // $params['item_details'] = $items;
