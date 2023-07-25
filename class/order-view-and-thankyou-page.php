@@ -28,7 +28,7 @@ $order = new WC_Order( $order_id );
             }, 1500);
           </script>
           <?php endif; ?>
-          <?php if( $order->meta_exists('_fp_payment_pdf_url') ) : ?>
+          <!-- <?php if( $order->meta_exists('_fp_payment_pdf_url') ) : ?>
           <tr>
               <th>Payment Instructions</th>
               <td><?php echo '<a href="'.esc_url($order->get_meta('_fp_payment_pdf_url')).'">'.esc_url($order->get_meta('_fp_payment_pdf_url')).'</a>'?></td>
@@ -38,7 +38,7 @@ $order = new WC_Order( $order_id );
               <th>Payment Page</th>
               <td><?php echo '<a href="'.esc_url($order->get_meta('_fp_payment_url')).'">'.esc_url($order->get_meta('_fp_payment_url')).'</a>'?></td>
           </tr>
-          <?php endif; ?>
+          <?php endif; ?> -->
       </tbody>
   </table>
 <?php endif; ?>

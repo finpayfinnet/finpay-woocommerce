@@ -304,9 +304,9 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     $params['order']['items'] = $items;
     $params['order']['description'] = 'Buy';
     $params['url']['callbackUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay";
-    $params['url']['successUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay";
-    $params['url']['backUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay";
-    $params['url']['backUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay";
+    $params['url']['successUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay&status=sukses";
+    $params['url']['backUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay&status=back";
+    $params['url']['failUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay&status=gagal";
     // $params['transaction_details']['gross_amount'] = $total_amount;
     // $params['item_details'] = $items;
     // $params['credit_card']['secure'] = ($this->enable_3d_secure == 'yes') ? true : false;
@@ -438,7 +438,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * @param WC_Order $order WC Order instance of the current transaction
    */
   public function set_finish_url_user_cookies( $order ) {
-    $cookie_name = 'wc_Finpay_last_order_finish_url';
+    $cookie_name = 'wc_finpay_last_order_finish_url';
     $order_finish_url = $order->get_checkout_order_received_url();
     setcookie($cookie_name, $order_finish_url);
   }
