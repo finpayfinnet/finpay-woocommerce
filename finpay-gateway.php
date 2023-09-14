@@ -2,7 +2,7 @@
 /*
 Plugin Name: Finpay - WooCommerce Payment Gateway
 Plugin URI: https://github.com/finpayfinnet/finpay-woocommerce
-Description: Accept all payment directly on your WooCommerce site in a seamless and secure checkout environment with <a  target="_blank" href="https://hub.finpay.id/">Finpay</a>
+Description: Accept all payment directly on your WooCommerce site in a secure checkout environment with <a  target="_blank" href="https://hub.finpay.id/">Finpay</a>
 Version: 2.32.2
 Author: Finpay
 Author URI: https://hub.finpay.id
