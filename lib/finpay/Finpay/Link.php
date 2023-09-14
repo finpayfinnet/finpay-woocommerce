@@ -25,7 +25,7 @@ class Link
      *
      * @param  array $params Payment options
      * @return object Snap response (token and redirect_url).
-     * @throws Exception curl error or midtrans error
+     * @throws Exception curl error or finpay error
      */
     public static function createTransaction($params)
     {
