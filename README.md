@@ -12,9 +12,7 @@ This plugin will allow secure online payment on your WooCommerce store.
 
 Finpay-WooCommerce is official plugin from [Finpay](https://hub.finpay.id). Finpay is an online payment gateway. We strive to make payments simple & secure for both the merchant and customers. Support various online payment channel.
 
-Please follow [this step by step guide](https://docs.Finpay.com/en/snap/with-plugins?id=wordpress-woocommerce) for complete configuration. If you have any feedback or request, please [do let us know here](https://docs.Finpay.com/en/snap/with-plugins?id=feedback-and-request).
-
-Want to see Finpay-WooCommerce payment plugins in action? We have some demo web-stores for WooCommerce that you can use to try the payment journey directly, visit the [CMS Demo Store](https://docs.Finpay.com/en/snap/with-plugins?id=Finpay-payment-plugin-live-demonstration)
+Want to see Finpay-WooCommerce payment plugins in action? We have some demo web-stores for WooCommerce that you can use to try the payment journey directly, visit the [CMS Demo Store](https://dev.oentoro.blog)
 
 Payment Method Feature:
 
