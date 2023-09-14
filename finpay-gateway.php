@@ -66,36 +66,6 @@ function finpay_gateway_init() {
   require_once dirname( __FILE__ ) . '/class/class.finpay-logger.php';
   // main gateway imports
   require_once dirname( __FILE__ ) . '/class/class.finpay-gateway.php';
-  // sub gateway imports
-  // require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-installment.php';
-  // require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-installmentoff.php';
-  // require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-promo.php';
-  // require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-paymentrequest.php';
-  // shared abstract import for sub separated gateway buttons
-  // require_once dirname( __FILE__ ) . '/abstract/abstract.finpay-gateway-sub.php';
-  // sub separated gateway buttons imports, add new methods under here
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-card.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-gopay.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-shopeepay.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-qris.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-bca-va.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-bni-va.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-bri-va.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-permata-va.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-echannel.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-other-va.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-akulaku.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-bca-klikpay.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-bri-epay.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-cimb-clicks.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-danamon-online.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-alfamart.php';
-  // require_once dirname( __FILE__ ) . '/class/sub-specific-buttons/class.finpay-gateway-sub-indomaret.php';
-
-  // Add this payment method if WooCommerce Subscriptions plugin activated
-  // if( class_exists( 'WC_Subscriptions' ) ) {
-  //   require_once dirname( __FILE__ ) . '/class/class.finpay-gateway-subscription.php';
-  // }
 
   add_filter( 'woocommerce_payment_gateways', 'finpay_add_payment_gateway' );
   add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'finpay_plugin_action_links' );
@@ -112,30 +82,6 @@ function finpay_add_payment_gateway( $methods ) {
    */
   // main gateways
   $methods[] = 'WC_Gateway_Finpay';
-  // sub separated gateway buttons, add new methods under here
-  // $methods[] = 'WC_Gateway_finpay_Sub_Card';
-  // $methods[] = 'WC_Gateway_finpay_Sub_Gopay';
-  // $methods[] = 'WC_Gateway_finpay_Sub_Shopeepay';
-  // $methods[] = 'WC_Gateway_finpay_Sub_QRIS';
-  // $methods[] = 'WC_Gateway_finpay_Sub_BCA_VA';
-  // $methods[] = 'WC_Gateway_finpay_Sub_BNI_VA';
-  // $methods[] = 'WC_Gateway_finpay_Sub_BRI_VA';
-  // $methods[] = 'WC_Gateway_finpay_Sub_Permata_VA';
-  // $methods[] = 'WC_Gateway_finpay_Sub_Echannel';
-  // $methods[] = 'WC_Gateway_finpay_Sub_Other_VA';
-  // $methods[] = 'WC_Gateway_finpay_Sub_Akulaku';
-  // $methods[] = 'WC_Gateway_finpay_Sub_BCA_Klikpay';
-  // $methods[] = 'WC_Gateway_finpay_Sub_BRI_Epay';
-  // $methods[] = 'WC_Gateway_finpay_Sub_CIMB_Clicks';
-  // $methods[] = 'WC_Gateway_finpay_Sub_Danamon_Online';
-  // $methods[] = 'WC_Gateway_finpay_Sub_Alfamart';
-  // $methods[] = 'WC_Gateway_finpay_Sub_Indomaret';
-  // additional gateways
-  // $methods[] = 'WC_Gateway_finpay_Installment';
-  // $methods[] = 'WC_Gateway_finpay_InstallmentOff';
-  // $methods[] = 'WC_Gateway_finpay_Promo';
-  // $methods[] = 'WC_Gateway_Finpay_Paymentrequest';
-  
   // Add this payment method if WooCommerce Subscriptions plugin activated
   if( class_exists( 'WC_Subscriptions' ) ) {
     $methods[] = 'WC_Gateway_Finpay_Subscription';
