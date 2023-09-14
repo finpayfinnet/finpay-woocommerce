@@ -216,7 +216,7 @@
        * @return string
        */
       protected function getSettingsDescription() {
-        return __('Secure payment via Finpay that accept various payment methods. This is the main payment button, 1 single button for multiple available payments methods. <a href="https://docs.Finpay.com/en/snap/with-plugins?id=woocommerce-plugin-configuration" target="_blank">Please follow "how-to configure guide" here</a>. Any feedback & request <a href="https://docs.Finpay.com/en/snap/with-plugins?id=feedback-and-request" target="_blank">let us know here</a>.', 'Finpay-woocommerce');
+        return __('Secure payment via Finpay that accept various payment methods.', 'Finpay-woocommerce');
       }
 
       /**
