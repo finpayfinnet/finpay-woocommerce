@@ -2,6 +2,8 @@
 
 namespace Finpay;
 
+use WC_Finpay_Logger;
+
 /**
  * Send request to Finpay API
  * Better don't use this class directly, use CoreApi, Transaction
@@ -99,6 +101,7 @@ class ApiRequestor
         } else {
             try {
                 $result_array = json_decode($result);
+                WC_Finpay_Logger::log('RESPONSE: '.$result,'response.log');
             } catch (\Exception $e) {
                 throw new \Exception("API Request Error unable to json_decode API response: ".$result . ' | Request url: '.$url);
             }
