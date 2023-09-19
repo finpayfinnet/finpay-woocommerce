@@ -28,32 +28,32 @@ return apply_filters(
             ),
         ),
         'username_sandbox'  => array(
-            'title'         => __("Username - Sandbox", 'finpay-woocommerce'),
+            'title'         => __("Merchant ID - Sandbox", 'finpay-woocommerce'),
             'type'          => 'text',
-            'description'   => sprintf(__('Input your finpay\'s merchant username. Get the username <a href="%s" target="_blank">here</a>', 'finpay-woocommerce'), $sandbox_key_url),
+            'description'   => sprintf(__('Input your finpay\'s Merchant ID. Get the Merchant ID <a href="%s" target="_blank">here</a>', 'finpay-woocommerce'), $sandbox_key_url),
             'default'       => '',
             'class'         => 'sandbox_settings toggle-finpay',
         ),
 
         'password_sandbox'  => array(
-            'title'         => __("Password - Sandbox", 'finpay-woocommerce'),
+            'title'         => __("Merchant Key - Sandbox", 'finpay-woocommerce'),
             'type'          => 'password',
-            'description'   => sprintf(__('Input your finpay\'s merchant password. Get the password <a href="%s" target="_blank">here</a>', 'finpay-woocommerce'), $sandbox_key_url),
+            'description'   => sprintf(__('Input your finpay\'s Merchant Key. Get the password <a href="%s" target="_blank">here</a>', 'finpay-woocommerce'), $sandbox_key_url),
             'default'       => '',
             'class'         => 'sandbox_settings toggle-finpay'
         ),
         
         'username_production'    => array(
-            'title'         => __("Username - Production", 'finpay-woocommerce'),
+            'title'         => __("Merchant ID - Production", 'finpay-woocommerce'),
             'type'          => 'text',
-            'description'   => sprintf(__('Input your <b>Production</b> username. Get the key <a href="%s" target="_blank">here</a>', 'finpay-woocommerce'), $production_key_url),
+            'description'   => sprintf(__('Input your <b>Production</b> Merchant ID. Get the key <a href="%s" target="_blank">here</a>', 'finpay-woocommerce'), $production_key_url),
             'default'       => '',
             'class'         => 'production_settings toggle-finpay',
         ),
         'password_production'     => array(
-            'title'         => __("Password - Production", 'finpay-woocommerce'),
+            'title'         => __("Merchant Key - Production", 'finpay-woocommerce'),
             'type'          => 'password',
-            'description'   => sprintf(__('Input your <b>Production</b> password. Get the key <a href="%s" target="_blank">here</a>', 'finpay-woocommerce'), $production_key_url),
+            'description'   => sprintf(__('Input your <b>Production</b> Merchant Key. Get the key <a href="%s" target="_blank">here</a>', 'finpay-woocommerce'), $production_key_url),
             'default'       => '',
             'class'         => 'production_settings toggle-finpay'
         ),

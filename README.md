@@ -16,14 +16,10 @@ Want to see Finpay-WooCommerce payment plugins in action? We have some demo web-
 
 Payment Method Feature:
 
-* Credit card fullpayment and other payment methods.
-* E-wallet, Bank transfer, internet banking for various banks
-* Credit card Online & offline installment payment.
-* Credit card BIN, bank transfer, and other channel promo payment.
-* Credit card MIGS acquiring channel.
-* Custom expiry.
-* Two-click & One-click feature.
-* Optional: Separated specific payment buttons with its own icons.
+* Credit Card
+* Virtual Account (Transfer Bank)
+* E-Money
+* QRIS
 
 
 ### Installation
@@ -45,8 +41,8 @@ Payment Method Feature:
 5. Go to menu **WooCommerce > Settings > Payment > Finpay > Manage**, fill the configuration fields.
 	* Fill **Title** with text button that you want to display to customer
 	* Select **Environment**, Sandbox is for testing transaction, Production is for real transaction
-	* Fill in the **username** & **password** with your corresonding [Finpay account](https://dashboard.finpay.id/) credentials
-	* Note: **username** and **password** for Sandbox & Production is different, make sure you use the correct one.
+	* Fill in the **Merchant ID* & **Merchant Key** with your corresonding [Finpay account](https://dashboard.finpay.id/) credentials
+	* Note: **Merchant ID** and **Merchant Key** for Sandbox & Production is different, make sure you use the correct one.
 	* Other configuration are optional, you may leave it as is.
 
 <!-- ### Finpay Configuration
