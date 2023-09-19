@@ -56,9 +56,9 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     // Hook for refund request from Finpay Dashboard or API refund
     add_action( 'create-refund-request',  array( $this, 'Finpay_refund' ), 10, 4 );
     // Custom hook to customize rate convertion
-    add_filter('finpay_to_idr_rate', function ($Finpay_rate) {
-      return $Finpay_rate;
-    });
+    // add_filter('finpay_to_idr_rate', function ($Finpay_rate) {
+    //   return $Finpay_rate;
+    // });
     if($this->id == 'finpay') {
       // init notif handler class, which also add action hook to handle notif on woocommerce_api_wc_Gateway_Finpay
       // @TODO refactor this
@@ -285,14 +285,14 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     // Iterate through the entire item to ensure that currency conversion is applied
     
     
-    if (get_woocommerce_currency() != 'IDR'){
-      foreach ($items as &$item) {
-        $item['unitPrice'] = $item['unitPrice'] * $this->to_idr_rate;
-        $item['unitPrice'] = intval($item['unitPrice']);
-      }
-      unset($item);
-      $params['order']['amount'] *= $this->to_idr_rate;
-    }
+    // if (get_woocommerce_currency() != 'IDR'){
+    //   foreach ($items as &$item) {
+    //     $item['unitPrice'] = $item['unitPrice'] * $this->to_idr_rate;
+    //     $item['unitPrice'] = intval($item['unitPrice']);
+    //   }
+    //   unset($item);
+    //   $params['order']['amount'] *= $this->to_idr_rate;
+    // }
 
     $total_amount=0;
     // error_log('print r items[]' . print_r($items,true)); //debugan
