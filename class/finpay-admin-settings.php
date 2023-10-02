@@ -58,6 +58,15 @@ return apply_filters(
             'default'       => '',
             'class'         => 'production_settings toggle-finpay'
         ),
+
+        'timeout'    => array(
+            'title'         => __("Timeout", 'finpay-woocommerce'),
+            'type'          => 'text',
+            'description'   => sprintf(__('Input your <b>Timeout</b>', 'finpay-woocommerce'), $timeout),
+            'default'       => '1440',
+        ),
+        
+        
         'logging' => array(
             'title'         => __('Enable finpay Logging', 'finpay-woocommerce'),
             'type'          => 'checkbox',

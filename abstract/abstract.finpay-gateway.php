@@ -1,5 +1,5 @@
 <?php
-if (! defined('ABSPATH')) {
+if (!defined('ABSPATH')) {
   exit;
 }
 
@@ -11,13 +11,15 @@ if (! defined('ABSPATH')) {
  * 
  * @extends WC_Payment_Gateway
  */
-abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {    
+abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway
+{
   /**
    * Constructor
    */
-  public function __construct() {
+  public function __construct()
+  {
     $this->has_fields   = true;
-    $this->icon         = apply_filters( 'woocommerce_finpay_icon', '' );
+    $this->icon         = apply_filters('woocommerce_finpay_icon', '');
     // Load the settings
     $this->init_form_fields();
     $this->init_settings();
@@ -26,11 +28,11 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
       'refunds'
     );
     // Get Settings
-    $this->title              = $this->get_option( 'title' );
-    $this->description        = $this->get_option( 'description' );
-    $this->environment        = $this->get_option( 'select_finpay_environment' );
-    $this->username = ($this->environment == 'production') ? $this->get_option( 'username_production' ) : $this->get_option( 'username_sandbox' );
-    $this->password = ($this->environment == 'production') ? $this->get_option( 'password_production' ) : $this->get_option( 'password_sandbox' );
+    $this->title              = $this->get_option('title');
+    $this->description        = $this->get_option('description');
+    $this->environment        = $this->get_option('select_finpay_environment');
+    $this->username = ($this->environment == 'production') ? $this->get_option('username_production') : $this->get_option('username_sandbox');
+    $this->password = ($this->environment == 'production') ? $this->get_option('password_production') : $this->get_option('password_sandbox');
     // $this->enable_3d_secure   = $this->get_option( 'enable_3d_secure' );
     // $this->enable_savecard   = $this->get_option( 'enable_savecard' );
     // $this->enable_redirect   = $this->get_option( 'enable_redirect' );
@@ -44,22 +46,22 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     $this->log = new WC_Logger();
     // var_dump('nyampe this log');exit();
 
-    add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( &$this, 'process_admin_options' ) );
-    
+    add_action('woocommerce_update_options_payment_gateways_' . $this->id, array(&$this, 'process_admin_options'));
+
     // Hook for adding JS script to admin config page 
-    add_action( 'admin_print_scripts-woocommerce_page_woocommerce_settings', array( &$this, 'finpay_admin_scripts' ));
-    add_action( 'admin_print_scripts-woocommerce_page_wc-settings', array( &$this, 'finpay_admin_scripts' ));
+    add_action('admin_print_scripts-woocommerce_page_woocommerce_settings', array(&$this, 'finpay_admin_scripts'));
+    add_action('admin_print_scripts-woocommerce_page_wc-settings', array(&$this, 'finpay_admin_scripts'));
     // Hook for adding custom HTML on thank you page (for payement/instruction url)
-    add_action( 'woocommerce_thankyou', array( $this, 'view_order_and_thankyou_page' ) );
+    add_action('woocommerce_thankyou', array($this, 'view_order_and_thankyou_page'));
     // Hook for adding custom HTML on view order menu from customer (for payement/instruction url)
-    add_action( 'woocommerce_view_order', array( $this, 'view_order_and_thankyou_page' ) );
+    add_action('woocommerce_view_order', array($this, 'view_order_and_thankyou_page'));
     // Hook for refund request from Finpay Dashboard or API refund
-    add_action( 'create-refund-request',  array( $this, 'Finpay_refund' ), 10, 4 );
+    add_action('create-refund-request',  array($this, 'Finpay_refund'), 10, 4);
     // Custom hook to customize rate convertion
     // add_filter('finpay_to_idr_rate', function ($Finpay_rate) {
     //   return $Finpay_rate;
     // });
-    if($this->id == 'finpay') {
+    if ($this->id == 'finpay') {
       // init notif handler class, which also add action hook to handle notif on woocommerce_api_wc_Gateway_Finpay
       // @TODO refactor this
       $notifHandler = new WC_Gateway_Finpay_Notif_Handler();
@@ -69,17 +71,19 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
   /**
    * Enqueue Javascripts
    * Add JS script file to admin page
-  */
-  public function finpay_admin_scripts() {
-    wp_enqueue_script( 'admin-finpay', FINPAY_PLUGIN_DIR_URL . 'public/js/finpay-admin-page.js' );
+   */
+  public function finpay_admin_scripts()
+  {
+    wp_enqueue_script('admin-finpay', FINPAY_PLUGIN_DIR_URL . 'public/js/finpay-admin-page.js');
   }
 
   /**
    * Initialise Gateway Settings Form Fields
    */
-  public function init_form_fields() {
+  public function init_form_fields()
+  {
     // var_dump('masuk sini');exit();
-    $this->form_fields = require( dirname(__FILE__) . '/../class/finpay-admin-settings.php' );
+    $this->form_fields = require(dirname(__FILE__) . '/../class/finpay-admin-settings.php');
     // Currency conversion rate if currency is not IDR
     // if (get_woocommerce_currency() != 'IDR') {
     //   $this->form_fields['to_idr_rate'] = array(
@@ -97,8 +101,9 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * @param  string $order_id generated by WC
    * @return string HTML
    */
-  public function view_order_and_thankyou_page( $order_id ) {
-    require_once( dirname(__FILE__) . '/../class/order-view-and-thankyou-page.php');
+  public function view_order_and_thankyou_page($order_id)
+  {
+    require_once(dirname(__FILE__) . '/../class/order-view-and-thankyou-page.php');
   }
 
   /**
@@ -108,14 +113,15 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * @param  float $amount
    * @return bool
    */
-  public function process_refund($order_id, $amount = null, $reason = '') {
-    $order = wc_get_order( $order_id );
-    $refundResponse = $this->refund( $order, $order_id, $amount, $reason );
+  public function process_refund($order_id, $amount = null, $reason = '')
+  {
+    $order = wc_get_order($order_id);
+    $refundResponse = $this->refund($order, $order_id, $amount, $reason);
 
     if ($refundResponse == '200') return true;
     else {
       $this->setLogError($refundResponse);
-      return new WP_Error( 'Finpay_refund_error', $refundResponse);
+      return new WP_Error('Finpay_refund_error', $refundResponse);
     }
   }
 
@@ -130,7 +136,8 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * @param string $reason
    * @return bool|\WP_Error
    */
-  public function refund( $order, $order_id, $amount, $reason ) {
+  public function refund($order, $order_id, $amount, $reason)
+  {
     $refund_params = array(
       // @TODO: careful with this order_id here, which does not get deduplicated treatment
       'refund_key' => 'RefundID' . $order_id . '-' . current_time('timestamp'),
@@ -139,17 +146,17 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     );
 
     try {
-      if(strpos($this->id, 'finpay_sub') !== false){
+      if (strpos($this->id, 'finpay_sub') !== false) {
         // for sub separated gateway buttons, use main gateway plugin id instead
         $this->id = 'finpay';
       }
       // @TODO: call refund API with transaction_id instead of order_id to avoid id not found for suffixed order_id. $order->get_transaction_id();
-      $transaction_id = $order->get_transaction_id() 
-        ? $order->get_transaction_id() 
+      $transaction_id = $order->get_transaction_id()
+        ? $order->get_transaction_id()
         : $order_id;
       $response = WC_Finpay_API::createRefund($transaction_id, $refund_params, $this->id);
     } catch (Exception $e) {
-      $this->setLogError( $e->getMessage() );
+      $this->setLogError($e->getMessage());
       // error_log(var_export($e,1));
       $error_message = strpos($e->getMessage(), '412') ? $e->getMessage() . ' Note: Refund via Finpay API only available on some payment methods, and if the payment status is eligible. Please consult to your Finpay PIC for more information' : $e->getMessage();
       return $error_message;
@@ -168,8 +175,9 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * @param $order_id
    * @return object $params
    */
-  public function getPaymentRequestData( $order_id ) {
-    $order = new WC_Order( $order_id );
+  public function getPaymentRequestData($order_id)
+  {
+    $order = new WC_Order($order_id);
     // $params = array(
     // 'transaction_details' => array(
     //   'order_id' => $order_id,
@@ -177,47 +185,47 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     // ));
 
     // $customer_details = array();
-    $customer_details['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
-    $customer_details['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
-    $customer_details['email'] = WC_Finpay_Utils::getOrderProperty($order,'billing_email');
-    $customer_details['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
+    $customer_details['first_name'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_first_name');
+    $customer_details['last_name'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_last_name');
+    $customer_details['email'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_email');
+    $customer_details['phone'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_phone');
 
     $billing_address = array();
-    $billing_address['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
-    $billing_address['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
-    $billing_address['address'] = WC_Finpay_Utils::getOrderProperty($order,'billing_address_1');
-    $billing_address['city'] = WC_Finpay_Utils::getOrderProperty($order,'billing_city');
-    $billing_address['postal_code'] = WC_Finpay_Utils::getOrderProperty($order,'billing_postcode');
-    $billing_address['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
-    $converted_country_code = WC_Finpay_Utils::convert_country_code(WC_Finpay_Utils::getOrderProperty($order,'billing_country'));
-    $billing_address['country_code'] = (strlen($converted_country_code) != 3 ) ? 'IDN' : $converted_country_code ;
+    $billing_address['first_name'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_first_name');
+    $billing_address['last_name'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_last_name');
+    $billing_address['address'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_address_1');
+    $billing_address['city'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_city');
+    $billing_address['postal_code'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_postcode');
+    $billing_address['phone'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_phone');
+    $converted_country_code = WC_Finpay_Utils::convert_country_code(WC_Finpay_Utils::getOrderProperty($order, 'billing_country'));
+    $billing_address['country_code'] = (strlen($converted_country_code) != 3) ? 'IDN' : $converted_country_code;
 
     $customer_details['billing_address'] = $billing_address;
     $customer_details['shipping_address'] = $billing_address;
 
-    if ( isset ( $_POST['ship_to_different_address'] ) ) {
+    if (isset($_POST['ship_to_different_address'])) {
       $shipping_address = array();
-      $shipping_address['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_first_name');
-      $shipping_address['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_last_name');
-      $shipping_address['address'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_address_1');
-      $shipping_address['city'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_city');
-      $shipping_address['postal_code'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_postcode');
-      $shipping_address['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
-      $converted_country_code = WC_Finpay_Utils::convert_country_code(WC_Finpay_Utils::getOrderProperty($order,'shipping_country'));
-      $shipping_address['country_code'] = (strlen($converted_country_code) != 3 ) ? 'IDN' : $converted_country_code;
+      $shipping_address['first_name'] = WC_Finpay_Utils::getOrderProperty($order, 'shipping_first_name');
+      $shipping_address['last_name'] = WC_Finpay_Utils::getOrderProperty($order, 'shipping_last_name');
+      $shipping_address['address'] = WC_Finpay_Utils::getOrderProperty($order, 'shipping_address_1');
+      $shipping_address['city'] = WC_Finpay_Utils::getOrderProperty($order, 'shipping_city');
+      $shipping_address['postal_code'] = WC_Finpay_Utils::getOrderProperty($order, 'shipping_postcode');
+      $shipping_address['phone'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_phone');
+      $converted_country_code = WC_Finpay_Utils::convert_country_code(WC_Finpay_Utils::getOrderProperty($order, 'shipping_country'));
+      $shipping_address['country_code'] = (strlen($converted_country_code) != 3) ? 'IDN' : $converted_country_code;
       $customer_details['shipping_address'] = $shipping_address;
     }
-    
+
     $params['customer_details'] = $customer_details;
     $items = array();
     // Build item_details API params from $Order items
-    if( sizeof( $order->get_items() ) > 0 ) {
-      foreach( $order->get_items() as $item ) {
-        if ( $item['qty'] ) {
+    if (sizeof($order->get_items()) > 0) {
+      foreach ($order->get_items() as $item) {
+        if ($item['qty']) {
           // $product = $order->get_product_from_item( $item );
           $f_item = array();
           $f_item['sku']    = $item['product_id'];
-          $f_item['unitPrice']      = ceil($order->get_item_subtotal( $item, false ));
+          $f_item['unitPrice']      = ceil($order->get_item_subtotal($item, false));
           $f_item['quantity']   = $item['qty'];
           $f_item['name'] = $item['name'];
           $items[] = $f_item;
@@ -226,7 +234,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     }
 
     // Shipping fee as item_details
-    if( $order->get_total_shipping() > 0 ) {
+    if ($order->get_total_shipping() > 0) {
       $items[] = array(
         'sku' => 'shippingfee',
         'unitPrice' => ceil($order->get_total_shipping()),
@@ -236,7 +244,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     }
 
     // Tax as item_details
-    if( $order->get_total_tax() > 0 ) {
+    if ($order->get_total_tax() > 0) {
       $items[] = array(
         'sku' => 'taxfee',
         'unitPrice' => ceil($order->get_total_tax()),
@@ -246,7 +254,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     }
 
     // Discount as item_details
-    if ( $order->get_total_discount() > 0) {
+    if ($order->get_total_discount() > 0) {
       $items[] = array(
         'sku' => 'totaldiscount',
         'unitPrice' => ceil($order->get_total_discount())  * -1,
@@ -256,10 +264,10 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     }
 
     // Fees as item_details
-    if ( sizeof( $order->get_fees() ) > 0 ) {
+    if (sizeof($order->get_fees()) > 0) {
       $fees = $order->get_fees();
       $i = 0;
-      foreach( $fees as $item ) {
+      foreach ($fees as $item) {
         $items[] = array(
           'sku' => 'itemfee' . $i,
           'unitPrice' => ceil($item['line_total']),
@@ -270,20 +278,21 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
       }
     }
 
-    $phone = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
-    if(substr($phone, 0, 1) == "0"){
-      $phone = "+62".substr($phone, 1);
+    $phone = WC_Finpay_Utils::getOrderProperty($order, 'billing_phone');
+    if (substr($phone, 0, 1) == "0") {
+      $phone = "+62" . substr($phone, 1);
     }
 
-    $params['customer']['email'] = WC_Finpay_Utils::getOrderProperty($order,'billing_email');
-    $params['customer']['firstName'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
-    $params['customer']['lastName'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
+    $params['customer']['email'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_email');
+    $params['customer']['firstName'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_first_name');
+    $params['customer']['lastName'] = WC_Finpay_Utils::getOrderProperty($order, 'billing_last_name');
     $params['customer']['mobilePhone'] = $phone;
 
     $params['order']['id'] = $order_id;
+    $params['order']['timeout'] = $this->get_option('timeout');
     // Iterate through the entire item to ensure that currency conversion is applied
-    
-    
+
+
     // if (get_woocommerce_currency() != 'IDR'){
     //   foreach ($items as &$item) {
     //     $item['unitPrice'] = $item['unitPrice'] * $this->to_idr_rate;
@@ -293,19 +302,19 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     //   $params['order']['amount'] *= $this->to_idr_rate;
     // }
 
-    $total_amount=0;
+    $total_amount = 0;
     // error_log('print r items[]' . print_r($items,true)); //debugan
     // Sum item details prices as gross_amount
     foreach ($items as $item) {
-      $total_amount+=($item['unitPrice']*$item['quantity']);
+      $total_amount += ($item['unitPrice'] * $item['quantity']);
     }
     $params['order']['amount'] = $total_amount;
     $params['order']['items'] = $items;
     $params['order']['description'] = 'Buy';
-    $params['url']['callbackUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay";
-    $params['url']['successUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay&status=sukses";
-    $params['url']['backUrl'] = get_permalink( wc_get_page_id( 'shop' ) );
-    $params['url']['failUrl'] = home_url('/')."?wc-api=WC_Gateway_Finpay&status=gagal";
+    $params['url']['callbackUrl'] = home_url('/') . "?wc-api=WC_Gateway_Finpay";
+    $params['url']['successUrl'] = home_url('/') . "?wc-api=WC_Gateway_Finpay&status=sukses";
+    $params['url']['backUrl'] = get_permalink(wc_get_page_id('shop'));
+    $params['url']['failUrl'] = home_url('/') . "?wc-api=WC_Gateway_Finpay&status=gagal";
     // $params['transaction_details']['gross_amount'] = $total_amount;
     // $params['item_details'] = $items;
     // $params['credit_card']['secure'] = ($this->enable_3d_secure == 'yes') ? true : false;
@@ -351,7 +360,8 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * @param $order
    * @return array $successResponse
    */
-  public function getResponseTemplate( $order ) {
+  public function getResponseTemplate($order)
+  {
     // Response object template
     $successResponse = array(
       'result'  => 'success',
@@ -360,12 +370,12 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
 
     // If snap token exists on the current $Order, reuse it
     // Prevent duplication of API call, which may throw API error
-    if ($order->meta_exists('_mt_payment_snap_token')){
-      $successResponse['redirect'] = $order->get_checkout_payment_url( true )."&snap_token=".$order->get_meta('_mt_payment_snap_token');
+    if ($order->meta_exists('_mt_payment_snap_token')) {
+      $successResponse['redirect'] = $order->get_checkout_payment_url(true) . "&snap_token=" . $order->get_meta('_mt_payment_snap_token');
     }
-      return $successResponse;
+    return $successResponse;
   }
-  
+
   /**
    * Helper function to handle Finpay Refund, when refund trigger not from WC but from Finpay
    * @param  [int] $order_id
@@ -374,10 +384,11 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * @param  [bool] $isFullRefund
    * @return WC_Order_Refund|WP_Error
    */
-  public function Finpay_refund( $order_id, $refund_amount, $refund_reason, $isFullRefund = false ) {
+  public function Finpay_refund($order_id, $refund_amount, $refund_reason, $isFullRefund = false)
+  {
     $order_id = WC_Finpay_Utils::check_and_restore_original_order_id($order_id);
-    $order  = wc_get_order( $order_id );
-    if( ! is_a( $order, 'WC_Order') ) {
+    $order  = wc_get_order($order_id);
+    if (!is_a($order, 'WC_Order')) {
       return;
     }
     // Prepare line items which we are refunding
@@ -385,47 +396,47 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
 
     if ($isFullRefund) {
       // Get Items
-      $order_items = $order->get_items( array( 'line_item', 'fee', 'shipping' ) );
-      if ( ! $order_items ) {
-        $this->setLogError( 'Refund not from WC dashboard error, This order id'. $order_id .'has no items' );
-        return new \WP_Error( 'wc-order', 'This order has no items' );
+      $order_items = $order->get_items(array('line_item', 'fee', 'shipping'));
+      if (!$order_items) {
+        $this->setLogError('Refund not from WC dashboard error, This order id' . $order_id . 'has no items');
+        return new \WP_Error('wc-order', 'This order has no items');
       }
 
-      foreach ( $order_items as $item_id => $item ) {
-        $line_total = $order->get_line_total( $item, false, false );
+      foreach ($order_items as $item_id => $item) {
+        $line_total = $order->get_line_total($item, false, false);
         $qty        = $item->get_quantity();
-        $tax_data   = wc_get_order_item_meta( $item_id, '_line_tax_data' );
+        $tax_data   = wc_get_order_item_meta($item_id, '_line_tax_data');
 
         $refund_tax = array();
         // Check if it's shipping costs. If so, get shipping taxes.
-        if ( $item instanceof \WC_Order_Item_Shipping ) {
-          $tax_data = wc_get_order_item_meta( $item_id, 'taxes' );
+        if ($item instanceof \WC_Order_Item_Shipping) {
+          $tax_data = wc_get_order_item_meta($item_id, 'taxes');
         }
         // If taxdata is set, format as decimal.
-        if ( ! empty( $tax_data['total'] ) ) {
-          $refund_tax = array_filter( array_map( 'wc_format_decimal', $tax_data['total'] ) );
+        if (!empty($tax_data['total'])) {
+          $refund_tax = array_filter(array_map('wc_format_decimal', $tax_data['total']));
         }
         // Calculate line total, including tax.
-        $line_total_inc_tax = wc_format_decimal( $line_total ) + ( is_numeric( reset( $refund_tax ) ) ? wc_format_decimal( reset( $refund_tax ) ) : 0 );
+        $line_total_inc_tax = wc_format_decimal($line_total) + (is_numeric(reset($refund_tax)) ? wc_format_decimal(reset($refund_tax)) : 0);
         // Fill item per line.
-        $line_items[ $item_id ] = array(
+        $line_items[$item_id] = array(
           'qty'          => $qty,
-          'refund_total' => wc_format_decimal( $line_total ),
-          'refund_tax'   => array_map( 'wc_round_tax_total', $refund_tax )
+          'refund_total' => wc_format_decimal($line_total),
+          'refund_tax'   => array_map('wc_round_tax_total', $refund_tax)
         );
       }
     }
 
     // Create refund
-    $refund = wc_create_refund( array(
+    $refund = wc_create_refund(array(
       'amount'         => $refund_amount,
       'reason'         => $refund_reason,
       'order_id'       => $order_id,
       'line_items'     => $line_items,
       'restock_items' => $isFullRefund
-    ) );
-    if ( is_wp_error( $refund ) ) throw new Exception($refund->get_error_message());
-      return $refund;
+    ));
+    if (is_wp_error($refund)) throw new Exception($refund->get_error_message());
+    return $refund;
   }
 
   /**
@@ -436,7 +447,8 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * @TAG: finish_url_user_cookies
    * @param WC_Order $order WC Order instance of the current transaction
    */
-  public function set_finish_url_user_cookies( $order ) {
+  public function set_finish_url_user_cookies($order)
+  {
     $cookie_name = 'wc_finpay_last_order_finish_url';
     $order_finish_url = $order->get_checkout_order_received_url();
     setcookie($cookie_name, $order_finish_url);
@@ -447,8 +459,9 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
    * @TODO: refactor name to make it more descriptive?
    * @param string $message the error message that will be recorded
    */
-  public function setLogError( $message ) {
-    WC_Finpay_Logger::log( $message, 'Finpay-error', $this->id, current_time( 'timestamp' ) );
+  public function setLogError($message)
+  {
+    WC_Finpay_Logger::log($message, 'Finpay-error', $this->id, current_time('timestamp'));
   }
 
   /**
@@ -458,34 +471,36 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
   public function get_icon()
   {
     $image_file_name_str = false;
-    if(isset($this->sub_payment_method_image_file_names_str_final)){
+    if (isset($this->sub_payment_method_image_file_names_str_final)) {
       $image_file_name_str = $this->sub_payment_method_image_file_names_str_final;
-    } else if (isset($this->sub_payment_method_image_file_names_str)){
+    } else if (isset($this->sub_payment_method_image_file_names_str)) {
       $image_file_name_str = $this->sub_payment_method_image_file_names_str;
     }
 
     $image_tag = '';
-    if( isset($image_file_name_str) && is_string($image_file_name_str) ){
+    if (isset($image_file_name_str) && is_string($image_file_name_str)) {
       $image_file_names = explode(',', $image_file_name_str);
       foreach ($image_file_names as $image_file_name) {
-        if(strlen($image_file_name)<=0){ continue; }
+        if (strlen($image_file_name) <= 0) {
+          continue;
+        }
         // remove whitespaces
         $image_file_name = str_replace(' ', '', $image_file_name);
         // prefix with internal image url
-        $image_url = FINPAY_PLUGIN_DIR_URL.'public/images/payment-methods/'.$image_file_name;
-        if(strpos($image_file_name, '://') !== false){
+        $image_url = FINPAY_PLUGIN_DIR_URL . 'public/images/payment-methods/' . $image_file_name;
+        if (strpos($image_file_name, '://') !== false) {
           // image is absolute url, external, don't prefix.
           $image_url = $image_file_name;
         }
-        $image_tag .= '<img src="'.$image_url.'" alt="Finpay" style="max-height: 2em; max-width: 4em; background-color: #ffffffdd; padding: 0.2em 0.3em; border-radius: 0.3em; border: 0.5px solid #ccccccdd;"/> ';
+        $image_tag .= '<img src="' . $image_url . '" alt="Finpay" style="max-height: 2em; max-width: 4em; background-color: #ffffffdd; padding: 0.2em 0.3em; border-radius: 0.3em; border: 0.5px solid #ccccccdd;"/> ';
       }
     }
 
     // allow merchant-defined custom filter function to modify $image_tag
-    $image_tag_after_filter = 
-      apply_filters( 'Finpay_gateway_icon_before_render', $image_tag);
+    $image_tag_after_filter =
+      apply_filters('Finpay_gateway_icon_before_render', $image_tag);
     // default filter from WC
-    $image_tag_after_filter = 
+    $image_tag_after_filter =
       apply_filters('woocommerce_gateway_icon', $image_tag_after_filter, $this->id);
     return $image_tag_after_filter;
   }
@@ -493,16 +508,17 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
   /**
    * @return string
    */
-  abstract protected function getDefaultTitle ();
+  abstract protected function getDefaultTitle();
 
   /**
    * @return string
    */
-  abstract protected function getDefaultDescription ();
+  abstract protected function getDefaultDescription();
   /**
    * @return string The main gateway plugin's Notification URL that will be displayed to config page
    */
-  public function get_main_notification_url(){
-    return add_query_arg( 'wc-api', 'WC_Gateway_Finpay', home_url( '/' ) );
+  public function get_main_notification_url()
+  {
+    return add_query_arg('wc-api', 'WC_Gateway_Finpay', home_url('/'));
   }
 }
