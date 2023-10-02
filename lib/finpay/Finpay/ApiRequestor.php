@@ -47,6 +47,9 @@ class ApiRequestor
     public static function remoteCall($url, $username, $password, $data, $post = true)
     {
         $ch = curl_init();
+        $data['customer']['lastName'] = $data['customer']['lastName']  == "" ? "-" : $data['customer']['lastName'] ;
+        WC_Finpay_Logger::log('REQUEST DATA: '.json_encode($data),'response.log');
+        
 
         // var_dump(Config::$username);exit();
         $curl_options = array(

@@ -50,6 +50,7 @@ return apply_filters(
             'default'       => '',
             'class'         => 'production_settings toggle-finpay',
         ),
+        
         'password_production'     => array(
             'title'         => __("Merchant Key - Production", 'finpay-woocommerce'),
             'type'          => 'password',
