@@ -54,12 +54,12 @@ class Sanitizer
         $field['first_name'] = $first_name
             ->maxLength(20)
             ->apply($field['first_name']);
-        if (isset($field['last_name'])) {
-            $last_name = new self;
-            $field['last_name'] = $last_name
-                ->maxLength(20)
-                ->apply($field['last_name']);
-        }
+        // if (isset($field['last_name'])) {
+        //     $last_name = new self;
+        //     $field['last_name'] = $last_name
+        //         ->maxLength(20)
+        //         ->apply($field['last_name']);
+        // }
         $email = new self;
         $field['email'] = $email
             ->maxLength(45)
@@ -84,7 +84,7 @@ class Sanitizer
     {
         $fields = array(
             'first_name'   => 20,
-            'last_name'    => 20,
+            // 'last_name'    => 20,
             'address'      => 200,
             'city'         => 20,
             'country_code' => 10

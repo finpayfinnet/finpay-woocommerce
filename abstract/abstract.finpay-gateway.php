@@ -278,7 +278,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
 
     $params['customer']['email'] = WC_Finpay_Utils::getOrderProperty($order,'billing_email');
     $params['customer']['firstName'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
-    $params['customer']['lastName'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
+    // $params['customer']['lastName'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
     $params['customer']['mobilePhone'] = $phone;
 
     $params['order']['id'] = $order_id;
