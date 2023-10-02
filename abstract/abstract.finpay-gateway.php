@@ -177,39 +177,38 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
     // ));
 
     // $customer_details = array();
-    // $customer_details['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
-    // // $customer_details['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
-    // $customer_details['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
-    // $customer_details['email'] = WC_Finpay_Utils::getOrderProperty($order,'billing_email');
-    // $customer_details['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
+    $customer_details['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
+    $customer_details['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
+    $customer_details['email'] = WC_Finpay_Utils::getOrderProperty($order,'billing_email');
+    $customer_details['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
 
-    // $billing_address = array();
-    // $billing_address['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
-    // $billing_address['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
-    // $billing_address['address'] = WC_Finpay_Utils::getOrderProperty($order,'billing_address_1');
-    // $billing_address['city'] = WC_Finpay_Utils::getOrderProperty($order,'billing_city');
-    // $billing_address['postal_code'] = WC_Finpay_Utils::getOrderProperty($order,'billing_postcode');
-    // $billing_address['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
-    // $converted_country_code = WC_Finpay_Utils::convert_country_code(WC_Finpay_Utils::getOrderProperty($order,'billing_country'));
-    // $billing_address['country_code'] = (strlen($converted_country_code) != 3 ) ? 'IDN' : $converted_country_code ;
+    $billing_address = array();
+    $billing_address['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
+    $billing_address['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
+    $billing_address['address'] = WC_Finpay_Utils::getOrderProperty($order,'billing_address_1');
+    $billing_address['city'] = WC_Finpay_Utils::getOrderProperty($order,'billing_city');
+    $billing_address['postal_code'] = WC_Finpay_Utils::getOrderProperty($order,'billing_postcode');
+    $billing_address['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
+    $converted_country_code = WC_Finpay_Utils::convert_country_code(WC_Finpay_Utils::getOrderProperty($order,'billing_country'));
+    $billing_address['country_code'] = (strlen($converted_country_code) != 3 ) ? 'IDN' : $converted_country_code ;
 
-    // $customer_details['billing_address'] = $billing_address;
-    // $customer_details['shipping_address'] = $billing_address;
+    $customer_details['billing_address'] = $billing_address;
+    $customer_details['shipping_address'] = $billing_address;
 
-    // if ( isset ( $_POST['ship_to_different_address'] ) ) {
-    //   $shipping_address = array();
-    //   $shipping_address['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_first_name');
-    //   $shipping_address['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_last_name');
-    //   $shipping_address['address'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_address_1');
-    //   $shipping_address['city'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_city');
-    //   $shipping_address['postal_code'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_postcode');
-    //   $shipping_address['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
-    //   $converted_country_code = WC_Finpay_Utils::convert_country_code(WC_Finpay_Utils::getOrderProperty($order,'shipping_country'));
-    //   $shipping_address['country_code'] = (strlen($converted_country_code) != 3 ) ? 'IDN' : $converted_country_code;
-    //   $customer_details['shipping_address'] = $shipping_address;
-    // }
+    if ( isset ( $_POST['ship_to_different_address'] ) ) {
+      $shipping_address = array();
+      $shipping_address['first_name'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_first_name');
+      $shipping_address['last_name'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_last_name');
+      $shipping_address['address'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_address_1');
+      $shipping_address['city'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_city');
+      $shipping_address['postal_code'] = WC_Finpay_Utils::getOrderProperty($order,'shipping_postcode');
+      $shipping_address['phone'] = WC_Finpay_Utils::getOrderProperty($order,'billing_phone');
+      $converted_country_code = WC_Finpay_Utils::convert_country_code(WC_Finpay_Utils::getOrderProperty($order,'shipping_country'));
+      $shipping_address['country_code'] = (strlen($converted_country_code) != 3 ) ? 'IDN' : $converted_country_code;
+      $customer_details['shipping_address'] = $shipping_address;
+    }
     
-    // $params['customer_details'] = $customer_details;
+    $params['customer_details'] = $customer_details;
     $items = array();
     // Build item_details API params from $Order items
     if( sizeof( $order->get_items() ) > 0 ) {
@@ -278,7 +277,7 @@ abstract class WC_Gateway_Finpay_Abstract extends WC_Payment_Gateway {
 
     $params['customer']['email'] = WC_Finpay_Utils::getOrderProperty($order,'billing_email');
     $params['customer']['firstName'] = WC_Finpay_Utils::getOrderProperty($order,'billing_first_name');
-    // $params['customer']['lastName'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
+    $params['customer']['lastName'] = WC_Finpay_Utils::getOrderProperty($order,'billing_last_name');
     $params['customer']['mobilePhone'] = $phone;
 
     $params['order']['id'] = $order_id;
