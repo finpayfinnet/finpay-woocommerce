@@ -135,7 +135,7 @@ class WC_Gateway_Finpay_Notif_Handler
       else $plugin_id = $wcorder->get_payment_method();
       // Verify finpay notification
       // $finpay_notification = WC_Finpay_API::getStatusFromfinpayNotif( $plugin_id );
-      WC_Finpay_Logger::log('Status: '.$raw_notification['result']['payment']['status'].', SOF: '.$raw_notification['sourceOfFunds']['type'], 'finpay-notif');
+      WC_Finpay_Logger::log('Status: ' . $raw_notification['result']['payment']['status'] . ', SOF: ' . $raw_notification['sourceOfFunds']['type'], 'finpay-notif');
       $plugin_options = get_option('woocommerce_' . $plugin_id . '_settings');
       $key = $plugin_options['select_finpay_environment'] == 'production' ? $plugin_options['password_production'] : $plugin_options['password_sandbox'];
 
@@ -144,9 +144,9 @@ class WC_Gateway_Finpay_Notif_Handler
 
       $signature = hash_hmac("sha512", json_encode($raw_notification), $key);
 
-      WC_Finpay_Logger::log('signature: '.$signature.', incoming signature: '.$incoming_signature, 'finpay-notif');
+      WC_Finpay_Logger::log('signature: ' . $signature . ', incoming signature: ' . $incoming_signature, 'finpay-notif');
       // if ($raw_notification['result']['payment']['status'] == 'PAID' || ($raw_notification['result']['payment']['status'] == 'CAPTURED' && $raw_notification['sourceOfFunds']['type'] == 'cc')) {
-      if($signature == $incoming_signature){
+      if ($signature == $incoming_signature) {
         // If notification verified, handle it
         // if (in_array($finpay_notification->status_code, array(200, 201, 202, 407))) {
         // @TAG: order-id-suffix-handling
@@ -303,6 +303,10 @@ class WC_Gateway_Finpay_Notif_Handler
           __('Status auto-updated via custom status mapping config: finpay-' . $finpay_notification->sourceOfFunds->type, 'finpay-woocommerce')
         );
       }
+    } else if (in_array($finpay_notification->result->payment->status, ['CANCELLED', 'REFUNDED', 'EXPIRED'])) {
+      $order->update_status('cancelled', __('Cancelled payment: finpay-' . $finpay_notification->sourceOfFunds->type, 'finpay-woocommerce'));
+    } else if (in_array($finpay_notification->result->payment->status, ['FAILED'])) {
+      $order->update_status('failed', __('Denied payment: finpay-' . $finpay_notification->sourceOfFunds->type, 'finpay-woocommerce'));
     }
     // else if ($finpay_notification->transaction_status == 'capture' && $finpay_notification->fraud_status == 'challenge') {
     //   $order->update_status('on-hold',__('Challanged payment: finpay-'.$finpay_notification->payment_type,'finpay-woocommerce'));
