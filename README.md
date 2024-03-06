@@ -69,3 +69,6 @@ Background:
 This plugin was mainly developed by following the official guideline from WooCommerce(WC), where WooCommerce provided their internal API function to create/edit WP options, we don’t use WP options API function directly. It seems the default WC Payment Gateway behavior (when uninstalled) does not include the uninstall clean up procedure to remove wp_options config values. Though that may be by design from WC, they may have decided that Gateway Settings/options should preserved during uninstall, so that upon re-install the Settings is auto-restored. For further explanation you can also [check this link](https://wordpress.org/support/topic/no-clean-uninstall-2/#post-15287583).
 
 </details>
+
+#### DEMO SITE ####
+Visit this [demo site](https://dev.oentoro.blog)
