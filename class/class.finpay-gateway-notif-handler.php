@@ -135,7 +135,18 @@ class WC_Gateway_Finpay_Notif_Handler
       else $plugin_id = $wcorder->get_payment_method();
       // Verify finpay notification
       // $finpay_notification = WC_Finpay_API::getStatusFromfinpayNotif( $plugin_id );
-      if ($raw_notification['result']['payment']['status'] == 'PAID') {
+      WC_Finpay_Logger::log('Status: '.$raw_notification['result']['payment']['status'].', SOF: '.$raw_notification['sourceOfFunds']['type'], 'finpay-notif');
+      $plugin_options = get_option('woocommerce_' . $plugin_id . '_settings');
+      $key = $plugin_options['select_finpay_environment'] == 'production' ? $plugin_options['password_production'] : $plugin_options['password_sandbox'];
+
+      $incoming_signature = $raw_notification['signature'];
+      unset($raw_notification['signature']);
+
+      $signature = hash_hmac("sha512", json_encode($raw_notification), $key);
+
+      WC_Finpay_Logger::log('signature: '.$signature.', incoming signature: '.$incoming_signature, 'finpay-notif');
+      // if ($raw_notification['result']['payment']['status'] == 'PAID' || ($raw_notification['result']['payment']['status'] == 'CAPTURED' && $raw_notification['sourceOfFunds']['type'] == 'cc')) {
+      if($signature == $incoming_signature){
         // If notification verified, handle it
         // if (in_array($finpay_notification->status_code, array(200, 201, 202, 407))) {
         // @TAG: order-id-suffix-handling
@@ -251,7 +262,6 @@ class WC_Gateway_Finpay_Notif_Handler
     global $woocommerce;
     // @TAG: order-id-suffix-handling
     $finpay_notification = json_decode(json_encode((object)$finpay_notification), FALSE);
-    wc_get_logger()->debug('VALID NOTIFICATION: ' . json_encode($finpay_notification));
     $order_id = WC_Finpay_Utils::check_and_restore_original_order_id($finpay_notification->order->id);
     $order = new WC_Order($order_id);
     $order->add_order_note(__('finpay HTTP notification received: ' . $finpay_notification->result->payment->status . '. finpay-' . $finpay_notification->sourceOfFunds->type, 'finpay-woocommerce'));
@@ -265,7 +275,8 @@ class WC_Gateway_Finpay_Notif_Handler
      * $is_payment_failed, $is_payment_pending, $is_payment_refund.
      * So the if-else branch only need to check from those var, instead of directly checking the condition.
      */
-    if ($finpay_notification->result->payment->status == 'PAID') {
+    WC_Finpay_Logger::log($finpay_notification->result->payment->status, 'finpay-request', $plugin_id, date('Y-m-d H:i:s'));
+    if ($finpay_notification->result->payment->status == 'PAID' || ($finpay_notification->result->payment->status == 'CAPTURED' && $finpay_notification->sourceOfFunds->type == 'cc')) {
       // success scenario of payment paid
 
       // Procces subscription transaction if contains subsctription for card transaction
