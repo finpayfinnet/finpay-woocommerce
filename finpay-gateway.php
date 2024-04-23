@@ -42,6 +42,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
    * This file is the WP/WC plugin main entry point, all other files are imported and registered from within this file.
    */
 
+add_action('before_woocommerce_init', function(){
+
+  if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+      \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+  }
+
+});
+
 // Make sure we don't expose any info if called directly
 add_action( 'plugins_loaded', 'finpay_gateway_init', 0 );
 
