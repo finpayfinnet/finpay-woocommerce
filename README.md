@@ -6,6 +6,14 @@ Receive online payment on your WooCommerce store with Finpay payment gateway int
 
 <!-- Also [Available on Wordpress plugin store](https://wordpress.org/plugins/Finpay-woocommerce/) -->
 
+### Penting jika Menggunakan Woocommerce versi 8.2 ke atas!
+Untuk saat ini halaman checkout bawaan woocommerce versi 8.2 tidak mendukung payment gateway. Untuk mengatasinya dapat dilakukan langkah berikut:
+1. Hapus halaman Checkout bawaan woocommerce.
+2. Buat halaman baru untuk mengganti checkout.
+3. Tambahkan blok shortcode berikut: ```[woocommerce_checkout]```, beri judul Checkout.
+4. Klik WooCommerce -> Pengaturan. Klik pada Pengaturan Lanjutan.
+5. Pada pilihan Halaman Checkout pilih halaman yang baru dibuat.
+
 ### Description
 
 This plugin will allow secure online payment on your WooCommerce store.
