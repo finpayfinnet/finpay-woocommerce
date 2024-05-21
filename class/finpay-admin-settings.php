@@ -14,7 +14,7 @@ return apply_filters(
         'enabled'       => array(
             'title'     => __('Enable/Disable', 'finpay-woocommerce'),
             'type'      => 'checkbox',
-            'label'     => __('Enable finpay Payment', 'finpay-woocommerce'),
+            'label'     => __('Enable Finpay Payment', 'finpay-woocommerce'),
             'default'   => 'no'
         ),
         'select_finpay_environment' => array(

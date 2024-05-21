@@ -42,22 +42,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
    * This file is the WP/WC plugin main entry point, all other files are imported and registered from within this file.
    */
 
-add_action('before_woocommerce_init', function(){
-
-  if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-      \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
-  }
-
-});
-
 // Make sure we don't expose any info if called directly
 add_action( 'plugins_loaded', 'finpay_gateway_init', 0 );
 
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
+
 function finpay_gateway_init() {
 
-  if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
-    return;
-  }
+  if ( ! class_exists( 'WC_Payment_Gateway' ) ) return;
 
   DEFINE ('FINPAY_PLUGIN_DIR_URL', plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) . '/' );
   DEFINE ('FINPAY_PLUGIN_VERSION', get_file_data(__FILE__, array('Version' => 'Version'), false)['Version'] );
