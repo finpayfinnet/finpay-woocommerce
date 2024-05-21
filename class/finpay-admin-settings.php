@@ -62,7 +62,7 @@ return apply_filters(
         'timeout'    => array(
             'title'         => __("Timeout", 'finpay-woocommerce'),
             'type'          => 'text',
-            'description'   => sprintf(__('Input your <b>Timeout</b>', 'finpay-woocommerce'), $timeout),
+            'description'   => __('Input your <b>Timeout</b>', 'finpay-woocommerce'),
             'default'       => '1440',
         ),
         
